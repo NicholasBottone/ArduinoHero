@@ -26,12 +26,38 @@ void loop() {
 }
 
 void strumInterrupt() {
-  if(digitalRead(RED_BUTTON) == 1) Serial.println("RED PUSHED");
-  if(digitalRead(BLUE_BUTTON) == 1) Serial.println("BLUE PUSHED");
-  if(digitalRead(GREEN_BUTTON) == 1) Serial.println("GREEN PUSHED");
-  if(digitalRead(YELLOW_BUTTON) == 1) Serial.println("YELLOW PUSHED");
-  if(digitalRead(PURPLE_BUTTON) == 1) Serial.println("PURPLE PUSHED");
-  if(digitalRead(STRUM_BUTTON_UP) == 1) Serial.println("STRUM UP PUSHED");
-  if(digitalRead(STRUM_BUTTON_DOWN) == 1) Serial.println("STRUM DOWN PUSHED");
+  // if(digitalRead(STRUM_BUTTON_UP) == 1) Serial.println("STRUM UP PUSHED");
+  // if(digitalRead(STRUM_BUTTON_DOWN) == 1) Serial.println("STRUM DOWN PUSHED");
+
+  if(digitalRead(RED_BUTTON) == 1) 
+    {Serial.print("R ");
+  } else {
+    Serial.print("- ");
+  }
+
+  if(digitalRead(PURPLE_BUTTON) == 1) {
+    Serial.print("P ");
+  } else {
+    Serial.print("- ");
+  }
+
+  if(digitalRead(GREEN_BUTTON) == 1){
+    Serial.print("G ");
+  } else {
+    Serial.print("- ");
+  }
+
+  if(digitalRead(YELLOW_BUTTON) == 1) {
+    Serial.print("Y ");
+  } else {
+    Serial.print("- ");
+  }
+
+  if(digitalRead(BLUE_BUTTON) == 1) {
+    Serial.println("B");
+  } else {
+    Serial.println("-");
+  }
+  
   delay(100);
 }

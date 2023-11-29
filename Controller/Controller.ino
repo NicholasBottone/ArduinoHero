@@ -1,11 +1,6 @@
-int RED_BUTTON = 6;
-int BLUE_BUTTON = 7;
-int GREEN_BUTTON = 8;
-int YELLOW_BUTTON = 9;
-int PURPLE_BUTTON = 10;
+#include "Controller.h"
 
-int STRUM_BUTTON_UP = 4;
-int STRUM_BUTTON_DOWN = 5;
+// #define CALIBRATE;
 
 void setup() {
   Serial.begin(9600);
@@ -26,11 +21,34 @@ void loop() {
 }
 
 void strumInterrupt() {
-  // if(digitalRead(STRUM_BUTTON_UP) == 1) Serial.println("STRUM UP PUSHED");
-  // if(digitalRead(STRUM_BUTTON_DOWN) == 1) Serial.println("STRUM DOWN PUSHED");
 
-  if(digitalRead(RED_BUTTON) == 1) 
-    {Serial.print("R ");
+  #if defined(CALIBRATE)
+    hardwareCheck();
+  
+  #else
+    noInterrupts();
+    /*create byte to represent the user event,
+    with each bit corresponding to a button 
+    press (1 being pressed) */
+    byte B = 0;
+    for(int i = 4; i < 11; i++){
+      if(digitalRead(i) == 1) {
+        B |= (1 << (i-4));
+      }
+    }
+
+    uartSend(B);
+    interrupts();
+  #endif
+  
+  // delay(100);
+}
+
+//a function to check if the buttons are wired correctly in the controller circuit
+void hardwareCheck(){
+  if(digitalRead(RED_BUTTON) == 1) {
+    Serial.print("R ");
+
   } else {
     Serial.print("- ");
   }
@@ -58,6 +76,4 @@ void strumInterrupt() {
   } else {
     Serial.println("-");
   }
-  
-  delay(100);
 }

@@ -17,5 +17,5 @@ void hardwareCheck();
 
 const int UART_PERIOD_MICROS = 104;
 
-const int inPin = 5; //TODO
-const int outPin = 3; //TODO
+const int inPin = 14;
+const int outPin = 13; 

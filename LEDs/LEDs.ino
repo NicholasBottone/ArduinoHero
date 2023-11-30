@@ -1,6 +1,8 @@
 #include <FastLED.h>
 #include "Gameboard.h"
 
+attachInterrupt(inPin, uartReceive, CHANGE);
+
 // This is an array of leds.  One item for each led in your strip.
 CRGB leds[NUM_LEDS];
 

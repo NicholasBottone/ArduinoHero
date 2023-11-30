@@ -42,3 +42,19 @@ int getLEDIndex(ColorColumn color_column, int index) {
   int row = color_column % 2 == 0 ? index : (LEDS_PER_COLUMN - 1 - index);
   return (color_column * LEDS_PER_COLUMN) + row;
 }
+
+// function that updates player streak and score when a player plays a note
+// on the guitar controller.
+void handleControllerInput() {
+  //read from buffer
+
+    noInterrupts();
+    if((rBufStart != rBufEnd)){
+      char byte = rBuf[rBufStart]; //note: only last 5 bits are the note buttons
+      
+      //TODO: handle game logic
+
+      rBufStart = (rBufStart + 1) % rsBufSize;
+    }
+    interrupts();
+}

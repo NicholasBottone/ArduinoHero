@@ -3,6 +3,8 @@
 
 #define DATA_PIN 5
 #define CLOCK_PIN 13
+#define UART_IN_PIN 5 //TODO
+#define UART_OUT_PIN 3
 
 enum ColorColumn {
   ORANGE = 0,
@@ -13,11 +15,23 @@ enum ColorColumn {
 };
 
 int getLEDIndex(ColorColumn color_column, int index);
+void handleControllerInput();
+
+/* Player game data */
+int combo = 0;
+int score = 0;
+
+/* send and receive buffers for UART communication */
+const byte rsBufSize = 80;
+byte sBuf[rsBufSize];
+int sBufStart = 0;
+int sBufEnd = 0;
+byte rBuf[rsBufSize];
+int rBufStart = 0;
+int rBufEnd = 0;
 
 /* UART helper function definitions */
 void uartSend(byte B);
 void uartReceive();
-const int UART_PERIOD_MICROS = 104;
 
-const int inPin = 5; //TODO
-const int outPin = 3; //TODO
+const int UART_PERIOD_MICROS = 104;

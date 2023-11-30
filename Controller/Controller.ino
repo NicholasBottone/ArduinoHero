@@ -4,6 +4,7 @@
 
 void setup() {
   Serial.begin(9600);
+  Serial1.begin(9600);
   while (!Serial); // Wait for Serial to initialize
   pinMode(RED_BUTTON, INPUT);
   pinMode(BLUE_BUTTON, INPUT);
@@ -13,35 +14,48 @@ void setup() {
   pinMode(STRUM_BUTTON_UP, INPUT);
   pinMode(STRUM_BUTTON_DOWN, INPUT);
 
-  attachInterrupt(STRUM_BUTTON_UP, strumInterrupt, RISING);
-  attachInterrupt(STRUM_BUTTON_DOWN, strumInterrupt, RISING);
+  attachInterrupt(STRUM_BUTTON_UP, strumUpInterrupt, RISING);
+  attachInterrupt(STRUM_BUTTON_DOWN, strumDownInterrupt, RISING);
 }
 
 void loop() {
 }
 
-void strumInterrupt() {
+void strumUpInterrupt(){
+  byte B = 0;
+  B |= (1 << 6);
 
-  #if defined(CALIBRATE)
-    hardwareCheck();
+  handleInterrupt(B);
+}
+
+void strumDownInterrupt() {
+  byte B = 0;
+  B |= (1 << 5);
   
-  #else
-    noInterrupts();
-    /*create byte to represent the user event,
-    with each bit corresponding to a button 
-    press (1 being pressed) */
-    byte B = 0;
-    for(int i = 4; i < 11; i++){
-      if(digitalRead(i) == 1) {
-        B |= (1 << (i-4));
+  handleInterrupt(B);
+}
+
+void handleInterrupt(byte B){
+  unsigned long currentMillis = millis();
+  if (currentMillis - lastDebounceTime > debounceDelay) {
+    #if defined(CALIBRATE)
+      hardwareCheck();
+    
+    #else
+      /*create byte to represent the user event,
+      with each bit corresponding to a button 
+      press (1 being pressed) */
+      for(int i = 10; i > 3; i--){
+        if(digitalRead(i) == 1) {
+          B |= (1 << (i-6));
+        }
       }
-    }
-
-    uartSend(B);
-    interrupts();
+      // uartSend(B);
+      Serial1.write(B);
+      Serial.println((int)B, BIN);
+      lastDebounceTime = currentMillis;
+  }
   #endif
-  
-  // delay(100);
 }
 
 //a function to check if the buttons are wired correctly in the controller circuit

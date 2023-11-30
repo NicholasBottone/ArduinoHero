@@ -9,13 +9,10 @@ const int GREEN_BUTTON = 8;
 const int YELLOW_BUTTON = 9;
 const int PURPLE_BUTTON = 10;
 
-/* UART helper function definitions */
-void uartSend(byte B);
-void uartReceive();
-
 void hardwareCheck();
 
-const int UART_PERIOD_MICROS = 104;
+unsigned long lastDebounceTime = 0;
+unsigned long debounceDelay = 200; // adjust as needed
 
-const int inPin = 14;
-const int outPin = 13; 
+const int inPin = 13;
+const int outPin = 14; 

@@ -49,12 +49,8 @@ void uartReceive() {
   // compare computed and received parity
   // if match, use value
    if(parity == inPinVal){
-    if(rBufStart != (rBufEnd + 1) % rsBufSize){ 
-      /* NOTE: 7 bits are being put into the buffer, to 
-      check note values, only the last 5 bits are needed! */
-      rBufEnd = (rBufEnd + 1) % rsBufSize;
-      rBuf[rBufEnd] = B;
-    }
+    
+    //GAME LOGIC HERE
   }
 
   // get past this last bit so as not to trigger an early interrupt

@@ -9,6 +9,7 @@ inline void uartDelay(unsigned long ltime) {
  * Send byte via UART (only populating 7 bits)
  */
 void uartSend(byte B) {  
+  Serial.println((int)B, BIN);
   digitalWrite(outPin, LOW);
   unsigned long lastClockTime = micros(); // record when pin was flipped
 
@@ -39,7 +40,6 @@ void uartSend(byte B) {
   }
   uartDelay(micros());
   digitalWrite(outPin, HIGH);
-  Serial.println((int)B, BIN);
 }
 
 
@@ -49,4 +49,3 @@ void uartSend(byte B) {
   */
 void uartReceive() {
 }
-

@@ -4,6 +4,9 @@ void setup() {
   Serial.begin(9600);
   Serial1.begin(9600);
   while (!Serial); // Wait for Serial to initialize
+
+  pinMode(outPin, OUTPUT);
+
   pinMode(RED_BUTTON, INPUT);
   pinMode(BLUE_BUTTON, INPUT);
   pinMode(GREEN_BUTTON, INPUT);
@@ -21,14 +24,14 @@ void loop() {
 
 void strumUpInterrupt(){
   byte B = 0;
-  B |= (1 << 6);
+  B |= (1 << 5);
 
   handleInterrupt(B);
 }
 
 void strumDownInterrupt() {
   byte B = 0;
-  B |= (1 << 5);
+  B |= (1 << 4);
   
   handleInterrupt(B);
 }
@@ -44,15 +47,16 @@ void handleInterrupt(byte B){
       /*create byte to represent the user event,
       with each bit corresponding to a button 
       press (1 being pressed) */
-      byte B = 0;
-      for(int i = 4; i < 11; i++){
+      // byte B = 0;
+      for(int i =6; i < 11; i++){
+        // Serial.println((int)B, BIN);
         if(digitalRead(i) == 1) {
-          B |= (1 << (i-4));
+          B |= (1 << (10-i));
         }
       }
       uartSend(B);
-      Serial.println((int)B, BIN);
       lastDebounceTime = currentMillis;
+      interrupts();
   }
   #endif
 }

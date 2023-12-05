@@ -11,13 +11,14 @@
   *  6. Yellow Button
   *  7. Purple Button
   */
-void uartReceive() {
-  // delay for 1/3 of the UART period just to get reads towards the middle of bits
-  if(Serial1.available()){
-    int inByte = Serial1.read();
-    Serial.print("inByte: ");
-    Serial.println(inByte);
+// void uartReceive() {
+//   // delay for 1/3 of the UART period just to get reads towards the middle of bits
+//   Serial.print("receiving...");
+//   if(Serial1.available()){
+//     int inByte = Serial1.read();
+//     Serial.print("inByte: ");
+//     Serial.println(inByte);
 
-    //patrick's logic to edit scores goes here!
-  }
-}
+//     //patrick's logic to edit scores goes here!
+//   }
+// }

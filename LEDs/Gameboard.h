@@ -3,7 +3,12 @@
 
 #define DATA_PIN 5
 #define CLOCK_PIN 13
-#define UART_IN_PIN 14 
+#define UART_IN_PIN 13
+
+
+/* Player game data */
+int combo = 0;
+int score = 0;
 
 enum ColorColumn {
   ORANGE = 0,
@@ -15,10 +20,6 @@ enum ColorColumn {
 
 int getLEDIndex(ColorColumn color_column, int index);
 void handleControllerInput();
-
-/* Player game data */
-int combo = 0;
-int score = 0;
 
 /* UART helper function definitions */
 void uartReceive();

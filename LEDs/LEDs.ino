@@ -8,6 +8,9 @@ CRGB leds[NUM_LEDS];
 
 // This function sets up the ledsand tells the controller about them
 void setup() {
+  Serial.begin(9600);
+  while (!Serial);
+  
   pinMode(UART_IN_PIN, INPUT);
   attachInterrupt(UART_IN_PIN, uartReceive, CHANGE);
 

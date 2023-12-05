@@ -2,7 +2,8 @@
 
  /*
   * Read a byte from the UART
-  * form: 7 bits of information, corresponding: in order from left to right
+  * form: 0 bit, then 7 bits of information, corresponding: in order from L to R
+  *  0. 0 
   *  1. Strum up
   *  2. Strump down
   *  3. Red Button
@@ -37,11 +38,12 @@ void uartReceive() {
   // if match, use value
   if(parity == inPinVal){
 
-  //GAME LOGIC HERE
+    //GAME LOGIC HERE
   }
 
   // get past this last bit so as not to trigger an early interrupt
   uartDelay(lastClockTime);
+  
   Serial.println((int)B, BIN);
 }
 

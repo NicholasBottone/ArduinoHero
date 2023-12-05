@@ -2,8 +2,7 @@
 #define NUM_LEDS (LEDS_PER_COLUMN * 5)
 
 #define DATA_PIN 5
-#define CLOCK_PIN 13
-#define UART_IN_PIN 13
+#define UART_IN_PIN 7
 
 
 /* Player game data */

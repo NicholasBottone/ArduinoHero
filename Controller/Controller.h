@@ -14,5 +14,5 @@ void hardwareCheck();
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 200; // adjust as needed
 
-const int inPin = 13;
+// const int inPin = 13;
 const int outPin = 14; 

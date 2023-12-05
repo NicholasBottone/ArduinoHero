@@ -4,7 +4,6 @@
 #define DATA_PIN 5
 #define CLOCK_PIN 13
 #define UART_IN_PIN 14 
-#define UART_OUT_PIN 13
 
 enum ColorColumn {
   ORANGE = 0,
@@ -21,17 +20,5 @@ void handleControllerInput();
 int combo = 0;
 int score = 0;
 
-/* send and receive buffers for UART communication */
-const byte rsBufSize = 80;
-byte sBuf[rsBufSize];
-int sBufStart = 0;
-int sBufEnd = 0;
-byte rBuf[rsBufSize];
-int rBufStart = 0;
-int rBufEnd = 0;
-
 /* UART helper function definitions */
-void uartSend(byte B);
 void uartReceive();
-
-const int UART_PERIOD_MICROS = 104;

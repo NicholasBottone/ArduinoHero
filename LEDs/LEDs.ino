@@ -11,6 +11,8 @@ void setup() {
   delay(2000);
 
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering is typical
+
+  Serial1.begin(9600); //for UART from guitar console
 }
 
 // This function runs over and over, and is where you do the magic to light

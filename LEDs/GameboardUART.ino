@@ -1,17 +1,4 @@
-/*
- * Manually wait for UART cycle
- */
-inline void uartDelay(unsigned long ltime) {
-  delayMicroseconds(UART_PERIOD_MICROS - (micros() - ltime));
-}
-
-/*
- * Send byte via UART
- * (not needed for current implementation)
- */
-void uartSend(byte B) { 
-}
-
+//file with all communication functions with other microcontrollers
 
  /*
   * Read a byte from the UART
@@ -26,33 +13,11 @@ void uartSend(byte B) {
   */
 void uartReceive() {
   // delay for 1/3 of the UART period just to get reads towards the middle of bits
-  delayMicroseconds(UART_PERIOD_MICROS / 3);
-  unsigned long lastClockTime = micros();
-  int i = 0;
-  byte B = 0;
-  byte parity = 0;
-  while (i < 7) {
-    B = B >> 1;
-    uartDelay(lastClockTime);
-    int inPinVal = digitalRead(inPin);
-    lastClockTime = micros();
-    if (inPinVal == HIGH) {
-      B = B | (0x1 << 6);
-      parity = parity ^ 0x01;
-    }
-    i += 1;
-  }
-  // Receive parity bit
-  uartDelay(lastClockTime);
-  int inPinVal = digitalRead(inPin);
-  lastClockTime = micros();
-  // compare computed and received parity
-  // if match, use value
-   if(parity == inPinVal){
-    
-    //GAME LOGIC HERE
-  }
+  if(Serial1.available()){
+    int inByte = Serial1.read();
+    Serial.print("inByte: ");
+    Serial.println(inByte);
 
-  // get past this last bit so as not to trigger an early interrupt
-  uartDelay(lastClockTime);
+    //patrick's logic to edit scores goes here!
+  }
 }

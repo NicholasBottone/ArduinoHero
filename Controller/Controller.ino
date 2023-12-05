@@ -40,20 +40,21 @@ void handleInterrupt(byte B){
       hardwareCheck();
     
     #else
+      noInterrupts();
       /*create byte to represent the user event,
       with each bit corresponding to a button 
       press (1 being pressed) */
-      for(int i = 10; i > 3; i--){
+      byte B = 0;
+      for(int i = 4; i < 11; i++){
         if(digitalRead(i) == 1) {
-          B |= (1 << (i-6));
+          B |= (1 << (i-4));
         }
       }
-      // uartSend(B);
-      Serial1.write(B);
-      Serial.println((int)B, BIN);
-      lastDebounceTime = currentMillis;
+      uartSend(B);
+      
+      interrupts();
+    #endif
   }
-  #endif
 }
 
 //a function to check if the buttons are wired correctly in the controller circuit

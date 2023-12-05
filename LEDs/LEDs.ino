@@ -8,7 +8,8 @@ CRGB leds[NUM_LEDS];
 
 // This function sets up the ledsand tells the controller about them
 void setup() {
-  Serial1.begin(9600); //for UART from guitar console
+  pinMode(UART_IN_PIN, INPUT);
+  attachInterrupt(UART_IN_PIN, uartReceive, CHANGE);
 
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);  // RGB ordering is typical
 }
@@ -16,11 +17,6 @@ void setup() {
 // This function runs over and over, and is where you do the magic to light
 // your leds.
 void loop() {
-
-  if (Serial1.available()>0) {
-    data=Serial1.read();
-    Serial.println((int)data, BIN);
-  } 
   else{
     //Move a single white led 
     for(int i = 0; i < LEDS_PER_COLUMN; i++) {

@@ -16,3 +16,5 @@ unsigned long debounceDelay = 200; // adjust as needed
 
 // const int inPin = 13;
 const int outPin = 14; 
+
+const int UART_PERIOD_MICROS = 104;

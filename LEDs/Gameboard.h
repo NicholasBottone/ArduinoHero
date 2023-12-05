@@ -22,4 +22,7 @@ int getLEDIndex(ColorColumn color_column, int index);
 void handleControllerInput();
 
 /* UART helper function definitions */
+void uartDelay(unsigned long ltime);
 void uartReceive();
+
+const int UART_PERIOD_MICROS = 104;

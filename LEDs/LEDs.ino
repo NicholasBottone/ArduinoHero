@@ -17,29 +17,27 @@ void setup() {
 // This function runs over and over, and is where you do the magic to light
 // your leds.
 void loop() {
-  else{
-    //Move a single white led 
-    for(int i = 0; i < LEDS_PER_COLUMN; i++) {
-      // Turn our current led on to white, then show the leds
-      leds[getLEDIndex(ORANGE, i)] = CRGB::OrangeRed;
-      leds[getLEDIndex(YELLOW, i)] = CRGB::Yellow;
-      leds[getLEDIndex(BLUE, i)] = CRGB::Blue;
-      leds[getLEDIndex(RED, i)] = CRGB::Red;
-      leds[getLEDIndex(GREEN, i)] = CRGB::Green;
+  //Move a single white led 
+  for(int i = 0; i < LEDS_PER_COLUMN; i++) {
+    // Turn our current led on to white, then show the leds
+    leds[getLEDIndex(ORANGE, i)] = CRGB::OrangeRed;
+    leds[getLEDIndex(YELLOW, i)] = CRGB::Yellow;
+    leds[getLEDIndex(BLUE, i)] = CRGB::Blue;
+    leds[getLEDIndex(RED, i)] = CRGB::Red;
+    leds[getLEDIndex(GREEN, i)] = CRGB::Green;
 
-      // Show the leds (only one of which is set to white, from above)
-      FastLED.show();
+    // Show the leds (only one of which is set to white, from above)
+    FastLED.show();
 
-      // Wait a little bit
-      delay(400);
+    // Wait a little bit
+    delay(400);
 
-      // Turn our current led back to black for the next loop around
-      leds[getLEDIndex(ORANGE, i)] = CRGB::Black;
-      leds[getLEDIndex(YELLOW, i)] = CRGB::Black;
-      leds[getLEDIndex(BLUE, i)] = CRGB::Black;
-      leds[getLEDIndex(RED, i)] = CRGB::Black;
-      leds[getLEDIndex(GREEN, i)] = CRGB::Black;
-    }
+    // Turn our current led back to black for the next loop around
+    leds[getLEDIndex(ORANGE, i)] = CRGB::Black;
+    leds[getLEDIndex(YELLOW, i)] = CRGB::Black;
+    leds[getLEDIndex(BLUE, i)] = CRGB::Black;
+    leds[getLEDIndex(RED, i)] = CRGB::Black;
+    leds[getLEDIndex(GREEN, i)] = CRGB::Black;
   }
 }
 

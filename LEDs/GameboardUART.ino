@@ -1,4 +1,4 @@
-file with all communication functions with other microcontrollers
+//file with all communication functions with other microcontrollers
 
  /*
   * Read a byte from the UART
@@ -21,7 +21,7 @@ void uartReceive() {
   while (i < 7) {
     B = B >> 1;
     uartDelay(lastClockTime);
-    int inPinVal = digitalRead(inPin);
+    int inPinVal = digitalRead(UART_IN_PIN);
     lastClockTime = micros();
     if (inPinVal == HIGH) {
       B = B | (0x1 << 6);
@@ -31,15 +31,21 @@ void uartReceive() {
   }
   // Receive parity bit
   uartDelay(lastClockTime);
-  int inPinVal = digitalRead(inPin);
+  int inPinVal = digitalRead(UART_IN_PIN);
   lastClockTime = micros();
   // compare computed and received parity
   // if match, use value
    if(parity == inPinVal){
 
     //GAME LOGIC HERE
-  }
-
-  // get past this last bit so as not to trigger an early interrupt
+    }
+    // get past this last bit so as not to trigger an early interrupt
   uartDelay(lastClockTime);
+}
+
+/*
+ * Manually wait for UART cycle
+ */
+inline void uartDelay(unsigned long ltime) {
+  delayMicroseconds(UART_PERIOD_MICROS - (micros() - ltime));
 }

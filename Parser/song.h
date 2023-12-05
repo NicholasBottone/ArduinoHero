@@ -1,9 +1,6 @@
 #ifndef PARSER
   #define PARSER
 
-  #include <stdio.h>
-  #include <stdlib.h>
-
   struct Song {
     char *name;
     char *artist;
@@ -13,7 +10,12 @@
     char *genre;
     char *filename;
 
-    // TODO: Add beat map
+    float tempo; // milliseconds per beat
+
+    // Each byte represents a beat
+    // 00000000 = no note
+    // 00011111 = 5 fret note
+    byte *beats;
   };
 
 #endif

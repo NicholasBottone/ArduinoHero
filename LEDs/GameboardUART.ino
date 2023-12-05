@@ -35,12 +35,14 @@ void uartReceive() {
   lastClockTime = micros();
   // compare computed and received parity
   // if match, use value
-   if(parity == inPinVal){
+  if(parity == inPinVal){
 
-    //GAME LOGIC HERE
-    }
-    // get past this last bit so as not to trigger an early interrupt
+  //GAME LOGIC HERE
+  }
+
+  // get past this last bit so as not to trigger an early interrupt
   uartDelay(lastClockTime);
+  Serial.println((int)B, BIN);
 }
 
 /*

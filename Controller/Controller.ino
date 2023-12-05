@@ -50,12 +50,11 @@ void handleInterrupt(byte B){
           B |= (1 << (i-4));
         }
       }
-      // Serial.println((int)B,BIN);
       uartSend(B);
-      
-      interrupts();
-    #endif
+      Serial.println((int)B, BIN);
+      lastDebounceTime = currentMillis;
   }
+  #endif
 }
 
 //a function to check if the buttons are wired correctly in the controller circuit

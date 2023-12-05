@@ -50,6 +50,7 @@ void handleInterrupt(byte B){
           B |= (1 << (i-4));
         }
       }
+      // Serial.println((int)B,BIN);
       uartSend(B);
       
       interrupts();

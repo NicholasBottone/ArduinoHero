@@ -39,6 +39,7 @@ void uartSend(byte B) {
   }
   uartDelay(micros());
   digitalWrite(outPin, HIGH);
+  Serial.println((int)B, BIN);
 }
 
 

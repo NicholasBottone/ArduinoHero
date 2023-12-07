@@ -130,3 +130,28 @@ void loop() {
   }
 
 }
+
+
+// Function that displays the starting screen of the game
+void displayStart_LCD(){
+
+}
+
+
+// Function that displays the countdown screen
+void displayCoundown_LCD(){
+
+}
+
+
+// Function that displays the LCD screen during gameplay.
+// shows current combo and max combo
+void displayGame_LCD(){
+
+}
+
+
+// Function that displays the end screen, which displays the player's max combo 
+void displayEnd_LCD(){
+
+}

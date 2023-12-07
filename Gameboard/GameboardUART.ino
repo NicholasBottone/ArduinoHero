@@ -1,3 +1,5 @@
+#include "Gameboard.h"
+
 //file with all communication functions with other microcontrollers
 
  /*

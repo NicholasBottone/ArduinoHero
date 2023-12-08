@@ -10,12 +10,15 @@ int notecount = 0;
 float BPM = 96 * 2;
 // float BPM = 190 * 4; // one step closer (linkin park)
 
-float exactDelay = 60000.0 / BPM; // Exact delay time in milliseconds
+float calculatedDelay = 60000.0 / BPM; // Exact delay time in milliseconds
 float cumulativeDrift = 0.0; // To track the drift over time during the loop
 
 unsigned int queue_index = 0;
 
 void moveLEDs(bool endFile){
+  // Get the BPM that we should be moving the notes at
+  
+
   notecount += 1;
   // Shift colors down in each column
   for (int col = 0; col < 5; ++col) {
@@ -56,20 +59,20 @@ void moveLEDs(bool endFile){
 
   // Wait a little bit before the next iteration (timestep)
   // Calculate drift
-  int delayTime = (int)exactDelay; // Truncated delay time
-  cumulativeDrift += (exactDelay - delayTime); // Update cumulative drift
+  int actualDelay = (int)calculatedDelay; // Truncated delay time
+  cumulativeDrift += (calculatedDelay - actualDelay); // Update cumulative drift
 
   // Compensate for drift
   if (cumulativeDrift >= 1.0) {
-    delayTime += 1; // Compensate by adding 1 ms to the delay
+    actualDelay += 1; // Compensate by adding 1 ms to the delay
     cumulativeDrift -= 1.0; // Subtract the compensated drift
   }
 
-  // Serial.print("cumulative drift: ");
-  // Serial.println(cumulativeDrift);
+  Serial.print("cumulative drift: ");
+  Serial.println(cumulativeDrift);
 
   // Delay for the adjusted time
-  delay(delayTime);
+  delay(actualDelay);
 }
 
 

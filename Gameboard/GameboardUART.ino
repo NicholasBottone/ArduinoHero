@@ -43,6 +43,10 @@ void uartReceive() {
   // if match, use value
   if(parity == inPinVal){
     //GAME LOGIC HERE
+    Serial.println("COMBO CHECK");
+    Serial.print(beatmap[beat_index], BIN);
+    Serial.print(" vs ");
+    Serial.println(B, BIN);
     if(beatmap[beat_index] == B){
       combo += 1;
     } else {

@@ -5,7 +5,6 @@
 // with the arduino pin number it is connected to
 const int songName_len = 3;
 const char* songNames[songName_len] = {"Song 1", "Song 2", "Song 3"};
-int song_num = 0;
 
 
 // Function that displays the starting screen of the game

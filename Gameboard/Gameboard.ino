@@ -1,6 +1,8 @@
 #include <FastLED.h>
 #include "Gameboard.h"
 
+#define CHECK_UNO_COMMUNICATION
+
 char data;
 static int savedClock;
 static bool start_button_pressed, up_button_pressed;
@@ -42,6 +44,17 @@ void setup() {
 // This function runs over and over, and is where you do the magic to light
 // your leds.
 void loop() {
+
+  #ifdef CHECK_UNO_COMMUNICATION
+    checkUnoCommunication();
+    if(Serial1.available()) {
+      Serial.print("receive: ");
+      Serial.write(Serial1.read());
+      Serial.println();
+    }
+    
+  #else
+
   updateInputs();
   static state CURRENT_STATE = sSONG_MENU;
   CURRENT_STATE = updateFSM(CURRENT_STATE, millis(), 
@@ -49,6 +62,8 @@ void loop() {
 
   start_button_pressed = false;
   up_button_pressed = false;
+
+  #endif
 }
 
 void updateInputs(){
@@ -79,7 +94,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
     else if(!startBtn && upBtn){ //transition 1-1b (menu scroll)
       nextState = sSONG_MENU;
 
-      Serial1.write("S");
+      Serial1.write(song_num);
 
       //blocking function: waiting 
       // while(!Serial1.available()){} //TODO - test if this is working
@@ -165,4 +180,22 @@ int receiveFromUno(){
     return (int)Serial1.read();
   }
   return -1;
+}
+
+void checkUnoCommunication(){
+  unsigned long currentMillisDebounce = millis();
+  if((currentMillisDebounce - lastDebounceTime > debounceDelay) &&
+    digitalRead(START_BTN)){
+    Serial1.write("1");
+    Serial.println("send: 1");
+    lastDebounceTime = currentMillisDebounce;
+  }
+  if((currentMillisDebounce - lastDebounceTime > debounceDelay) &&
+    digitalRead(UP_BTN)){
+    Serial1.write("S");
+    Serial.print("send: S");
+    song_num += 1;
+    lastDebounceTime = currentMillisDebounce;
+  }
+
 }

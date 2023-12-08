@@ -25,6 +25,7 @@
 LiquidCrystal lcd(rs, e, d4, d5, d6, d7);
 unsigned char beatmap[] = {0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011, 0b11111111};
 unsigned int beat_index = 0;
+int song_num = 0;
 
 /* Player game data */
 int combo = 0;

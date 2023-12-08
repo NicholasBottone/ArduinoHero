@@ -77,27 +77,26 @@ struct Song {
   // 00000000 = no note
   // 00011111 = 5 fret note
   byte *beats[];
+  beats_length;
   
   // The BPMs in order that they appear in the song
   'bpm_values': [], // [155, 160, ...] (value to change the bpm to)
-
+   bpm_values_length;
+  
   // The index in beats[] that the bpm changes occurs at (parallel array to bpm_values)
   'bpm_change_indexes': [], # [0, 815]
 };
 """
 
 
-def parseChart():
-    """Parses the chart file and returns a list of strings that make up the file."""
-    file = [
-        '#include "song.h"\n',
-        '\n',
-        'Song song = {\n',
-    ]
-    resolution = 192
-    with open(FILE_TO_PARSE, 'r') as chart:
-        current_section = None
-        for line in chart:
+def parse_chart_file(filepath):
+    """
+    Parses the .chart file and extracts relevant information based on the specified difficulty.
+    """
+    song_data = {}
+    current_section = None
+    with open(filepath, 'r', encoding='utf-8-sig') as file:
+        for line in file:
             line = line.strip()
             if line.startswith('['):
                 current_section = line[1:-1]
@@ -220,9 +219,11 @@ def create_arduinohero_struct(song_data):
                      # Each beat is not necessarily a quarter note, 
                      # it depends on the sampling rate & resolution.
                      # (00000000 = no note (rest), 00011111 = 5 fret note, etc.)
+        'beats_length': 0, # The length of the beats array
 
         'bpm_values': [], # [155, 160] 
                           # (The BPMs in order that they appear in the song)
+        'bpm_values_length': 0, # The length of the beats array
         'bpm_change_indexes': [], # [0, 815, ...]
                                   # The index in beats[] that the bpm changes occurs at 
                                   # (parallel array to bpm_values)
@@ -230,9 +231,11 @@ def create_arduinohero_struct(song_data):
     }
 
     struct_song['bpm_values'], struct_song['bpm_change_indexes'] = process_bpm_changes(song_data, resolution, SAMPLING_RATE)
+    struct_song['bpm_values_length'] = len(struct_song['bpm_values'])
 
     # Process and generate the necessary information for an ArudinoHero beat chart
     struct_song['beats'] =  process_arudinohero_beats(song_data, resolution, SAMPLING_RATE)
+    struct_song['beats_length'] = len(struct_song['beats'])
 
     return struct_song
 

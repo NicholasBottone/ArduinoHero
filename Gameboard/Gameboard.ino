@@ -24,7 +24,7 @@ void setup() {
   savedClock = 0;
   start_button_pressed = false;
   up_button_pressed = false;
-  finish_count = 10;
+  finish_count = 6;
 
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.clear();
@@ -70,6 +70,7 @@ void updateInputs(){
   unsigned long currentMillisDebounce = millis();
   if((currentMillisDebounce - lastDebounceTime > debounceDelay) &&
       digitalRead(START_BTN)){
+    Serial.println("start pressed");
     start_button_pressed = true;
     lastDebounceTime = currentMillisDebounce;
   }
@@ -112,11 +113,11 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       // while(!Serial1.available()){} //TODO - test if this is working
 
       //check that loaded message is received --> if loaded go to sCOUNTDOWN
-      if (Serial1.available()){
-        int inByte = Serial1.read();
-        Serial.write(inByte);
-        if(inByte == (int)"received") nextState = sCOUNTDOWN;
-      }
+      // if (Serial1.available()){
+      //   int inByte = Serial1.read();
+      //   Serial.write(inByte);
+      //   if(inByte == (int)"received") nextState = sCOUNTDOWN;
+      // }
 
       displayStart_LCD(true, false);
       nextState = sCOUNTDOWN;
@@ -147,31 +148,34 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       beat_index += 1;
       savedClock = millis();
       clearLEDs();
-    } else if(beatmap[beat_index] == 0b11111111 && finish_count > LEDS_PER_COLUMN) { //transition 3-3(b)
+    } else if((beatmap[beat_index] == 0b11111111 ||
+        BEATMAP_SIZE <= beat_index) 
+        && finish_count >= 0) { //transition 3-3(b)
       finish_count -= 1;
       moveLEDs(true);
       displayGame_LCD(combo_max, combo);
       nextState = sUPDATE_GAME;
-    } else if(finish_count <= LEDS_PER_COLUMN){ //transition 3-4
+    } else if(finish_count < 0){ //transition 3-4
       clearLEDs();
       nextState = sGAME_OVER;
       savedClock = mils;
-      finish_count = 10;
+      finish_count = 6;
     }
     break;
   
   case sGAME_OVER:
-    // clearLEDs();
     displayEnd_LCD(combo_max);
     if((mils - savedClock) < 3000 || !start_button_pressed) { // transition 4-4
-      savedClock = mils;
       nextState = sGAME_OVER;
     } else if((mils - savedClock) >= 3000 && start_button_pressed) { // transition 4-1
       savedClock = mils;
       countdown = 0;
       score = 0;
+      combo = 0;
+      combo_max = 0;
       start_button_pressed = false;
       nextState = sSONG_MENU;
+      beat_index = 0;
     }
     break;
   
@@ -183,15 +187,6 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
   return nextState;
 }
 
-
-// This function waits for then receives a message from the Uno, returning that 
-// message as an int, a watchdog bites if this hangs (TODO)
-int receiveFromUno(){
-  if(Serial1.available()>0){
-    return (int)Serial1.read();
-  }
-  return -1;
-}
 
 void checkUnoCommunication(){
   unsigned long currentMillisDebounce = millis();
@@ -208,5 +203,4 @@ void checkUnoCommunication(){
     song_num += 1;
     lastDebounceTime = currentMillisDebounce;
   }
-
 }

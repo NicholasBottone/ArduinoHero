@@ -30,6 +30,7 @@ void moveLEDs(bool endFile){
   // Randomly choose a column to turn on the first LED with its color
   if(!endFile){
     unsigned char beat = beatmap[beat_index];
+    
     // Serial.print("BEAT: ");
     // Serial.println((int)beat, BIN);
 
@@ -78,21 +79,6 @@ int getLEDIndex(ColorColumn color_column, int index) {
   return (color_column * LEDS_PER_COLUMN) + row;
 }
 
-//function that adds next beat to the beatqueue
-void updateBeatQueue(){
-  Serial.println("updating queue");
-
-  unsigned char B = beatmap[beat_index];
-  Serial.println((int)B, BIN);
-  bool beat_bools[queue_index] = {false, false, false, false, false};
-  
-  for(int i = 0; i < 5; i++){
-    if((B & (1 << i)) > 0) beat_queue[queue_index][i] = true;
-    else beat_queue[queue_index][i] = false;
-  }
-
-  queue_index = (queue_index + 1) % 6; //0-5
-}
 
 // function that turns all LEDs off of last row
 void clearLEDs(){

@@ -169,7 +169,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       nextState = sGAME_OVER;
     } else if((mils - savedClock) >= 3000 && start_button_pressed) { // transition 4-1
       savedClock = mils;
-      countdown = 0;
+      countdown = 3; // reset countdown for next track selection
       score = 0;
       combo = 0;
       combo_max = 0;

@@ -1,17 +1,14 @@
 #include <FastLED.h>
 #include "Gameboard.h"
 
-#define CHECK_UNO_COMMUNICATION
+// #define CHECK_UNO_COMMUNICATION
 
 char data;
-static int savedClock;
+static int savedClock, finish_count;
 static bool start_button_pressed, up_button_pressed;
 
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 200;
-
-// This is an array of leds.  One item for each led in your strip.
-CRGB leds[NUM_LEDS];
 
 // This function sets up the ledsand tells the controller about them
 void setup() {
@@ -22,13 +19,16 @@ void setup() {
   pinMode(START_BTN, INPUT);
   pinMode(UP_BTN, INPUT);
   pinMode(UART_IN_PIN, INPUT);
-  attachInterrupt(UART_IN_PIN, uartReceive, CHANGE);
+  // attachInterrupt(UART_IN_PIN, uartReceive, CHANGE);
 
   savedClock = 0;
   start_button_pressed = false;
   up_button_pressed = false;
+  finish_count = 10;
 
-  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);  //RGB ordering is typical
+  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.clear();
+  FastLED.show();
 
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
@@ -105,7 +105,8 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       //on button press, send message to UNO to load song
       unsigned long currentMillis = millis();
 
-      Serial1.write("L");
+      Serial1.write("1");
+      Serial.println("starting");
 
       //blocking function: waiting 
       // while(!Serial1.available()){} //TODO - test if this is working
@@ -119,6 +120,8 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
 
       displayStart_LCD(true, false);
       nextState = sCOUNTDOWN;
+      //TODO -- need to set BPM;
+      // BPM = 1000; //dummy value for now
     } 
     break;
     
@@ -137,20 +140,28 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
 
 
   case sUPDATE_GAME:
-    //TODO -- ALL WORK LEFT IS IN HERE
-    if((mils - savedClock) < 10000) {
-      moveLEDs();
+    if(beatmap[beat_index] != 0b11111111){ //transition 3-3(a)
+      moveLEDs(false);
       displayGame_LCD(combo_max, combo);
       nextState = sUPDATE_GAME;
       beat_index += 1;
-    } else if(beatmap[beat_index] == 0b11111111) { //transition 3-4
+      savedClock = millis();
+      clearLEDs();
+    } else if(beatmap[beat_index] == 0b11111111 && finish_count > LEDS_PER_COLUMN) { //transition 3-3(b)
+      finish_count -= 1;
+      moveLEDs(true);
+      displayGame_LCD(combo_max, combo);
+      nextState = sUPDATE_GAME;
+    } else if(finish_count <= LEDS_PER_COLUMN){ //transition 3-4
+      clearLEDs();
       nextState = sGAME_OVER;
       savedClock = mils;
-      clearLEDs();
+      finish_count = 10;
     }
     break;
   
   case sGAME_OVER:
+    // clearLEDs();
     displayEnd_LCD(combo_max);
     if((mils - savedClock) < 3000 || !start_button_pressed) { // transition 4-4
       savedClock = mils;

@@ -22,10 +22,19 @@
 #define START_BTN 6
 #define UP_BTN A1 //TODO - see if this works
 
+// This is an array of leds.  One item for each led in your strip.
+CRGB leds[NUM_LEDS];
+
 LiquidCrystal lcd(rs, e, d4, d5, d6, d7);
-unsigned char beatmap[] = {0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011, 0b11111111};
+unsigned char beatmap[25] = {
+  0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011,
+  0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011,
+  0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011,
+  0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011,
+  0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011};
 unsigned int beat_index = 0;
 int song_num = 0;
+// unsigned int BPM = 1000; //TODO - get from parser
 
 /* Player game data */
 int combo = 0;

@@ -47,8 +47,13 @@ void loop() { // run over and over
 
   //receiving from MKR and printing loop
   if(mySerial.available()) {
-    Serial.write(mySerial.read());
-    mySerial.write("received\n");
+    char inByte = (mySerial.read());
+
+    if(inByte == 'L'){
+      Serial.write(inByte);
+      mySerial.write("received\n");
+    }
+
   }
 }
 

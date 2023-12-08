@@ -1,5 +1,6 @@
 import sys
 import os
+import logging
 
 # https://docs.google.com/document/d/1v2v0U-9HQ5qHeccpExDOLJ5CMPZZ3QytPmAG5WF0Kzs/mobilebasic
 # (tickEnd - tickStart) / resolution * 60.0 (seconds per minute) / bpm
@@ -16,8 +17,8 @@ Global Variables:
         Notes sampled from .chart file @ Resolution * Sampling Rate.
         Basically, this is sample every quarter note (SAMPLING_RATE == 1), eighth note (SAMPLING_RATE == .5), etc.
 """
-INPUT_FILE = os.path.join(os.path.dirname(__file__), 'notes.chart')
-OUTPUT_FILE = os.path.join(os.path.dirname(__file__), 'chart.h')
+INPUT_FILE = os.path.join(os.path.dirname(__file__), 'allstar_notes.chart')
+OUTPUT_FILE = os.path.join(os.path.dirname(__file__), 'allstar_chart.h')
 DIFFICULTY_TO_PARSE = 'ExpertSingle'
 SAMPLING_RATE = 1 # 1 = quarter note, .5 = eighth note, .25 = sixteenth note, etc. 
 
@@ -130,8 +131,11 @@ def process_bpm_changes(song_data, resolution, sample_rate):
             # Calculate the index of the beat (in the beats[] list we will make next) of the BPM change
             index = tick / (resolution * sample_rate)
 
-            # Ensure the index is a whole number
-            assert index.is_integer(), f"BPM change index is not an integer: {index}"
+            # Log a warning if the index is not an integer and round it
+            if not index.is_integer():
+                logging.warning(f"BPM change index is not an integer, rounding: {index} to {round(index)}")
+                index = round(index)
+
 
             bpm_values.append(bpm)
             bpm_change_indexes.append(int(index))  # Convert to int for whole number
@@ -175,6 +179,7 @@ def process_arudinohero_beats(song_data, resolution, sampling_rate):
     if current_sample_byte != 0b000000:
         beats.append(current_sample_byte)
 
+    print(f"Number of beats: {len(beats)}")
     return beats
 
 

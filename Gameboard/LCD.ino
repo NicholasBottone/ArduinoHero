@@ -1,4 +1,4 @@
-#include <LiquidCrystal.h>
+// #include <LiquidCrystal.h>
 #include "Gameboard.h"
 
 // initialize the library by associating any needed LCD interface pin
@@ -9,7 +9,7 @@ int song_num = 0;
 
 
 // Function that displays the starting screen of the game
-void displayStart_LCD(bool upButtonPress, bool startButtonPress){
+void displayStart_LCD(bool startButtonPress, bool upButtonPress){
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Track Selection:");
@@ -53,13 +53,21 @@ void displayCoundown_LCD(int countdown){
 void displayGame_LCD(int max_combo, int curr_combo){
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("unimplemented :("); //TODO
+  lcd.print("Combo:");
+
+  lcd.setCursor(7, 0);
+  lcd.print(curr_combo);
 }
 
 
 // Function that displays the end screen, which displays the player's max combo 
 void displayEnd_LCD(int max_combo){
   lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("unimplemented :("); //TODO
+  lcd.setCursor(3, 0);
+  lcd.print("GAME OVER"); //TODO
+
+  lcd.setCursor(2, 2);
+  lcd.print("max combo:");
+  lcd.setCursor(13, 2);
+  lcd.print(max_combo);
 }

@@ -3,13 +3,18 @@
 
 // This function moves the LEDs Down the LED display
 void moveLEDs() {
-  for(int i = 0; i < LEDS_PER_COLUMN; i++) {
+  for(int k = 0; k < LEDS_PER_COLUMN; k++) {
     // Turn our current led on to white, then show the leds
-    leds[getLEDIndex(ORANGE, i)] = CRGB::OrangeRed;
-    leds[getLEDIndex(YELLOW, i)] = CRGB::Yellow;
-    leds[getLEDIndex(BLUE, i)] = CRGB::Blue;
-    leds[getLEDIndex(RED, i)] = CRGB::Red;
-    leds[getLEDIndex(GREEN, i)] = CRGB::Green;
+
+    unsigned char beat = beatmap[beat_index];
+
+    // Serial.println((int) beat, BIN);
+
+    if((beat & (1 << 4)) > 0) leds[getLEDIndex(ORANGE, k)] = CRGB::OrangeRed;
+    if((beat & (1 << 3)) > 0) leds[getLEDIndex(YELLOW, k)] = CRGB::Yellow;
+    if((beat & (1 << 2)) > 0) leds[getLEDIndex(BLUE, k)] = CRGB::Blue;
+    if((beat & (1 << 1)) > 0) leds[getLEDIndex(RED, k)] = CRGB::Red;
+    if((beat & (1 << 0)) > 0) leds[getLEDIndex(GREEN, k)] = CRGB::Green;
 
     // Show the leds (only one of which is set to white, from above)
     FastLED.show();
@@ -18,11 +23,11 @@ void moveLEDs() {
     delay(400);
 
     // Turn our current led back to black for the next loop around
-    leds[getLEDIndex(ORANGE, i)] = CRGB::Black;
-    leds[getLEDIndex(YELLOW, i)] = CRGB::Black;
-    leds[getLEDIndex(BLUE, i)] = CRGB::Black;
-    leds[getLEDIndex(RED, i)] = CRGB::Black;
-    leds[getLEDIndex(GREEN, i)] = CRGB::Black;
+    leds[getLEDIndex(ORANGE, k)] = CRGB::Black;
+    leds[getLEDIndex(YELLOW, k)] = CRGB::Black;
+    leds[getLEDIndex(BLUE, k)] = CRGB::Black;
+    leds[getLEDIndex(RED, k)] = CRGB::Black;
+    leds[getLEDIndex(GREEN, k)] = CRGB::Black;
   }
 }
 
@@ -30,4 +35,15 @@ void moveLEDs() {
 int getLEDIndex(ColorColumn color_column, int index) {
   int row = color_column % 2 == 0 ? index : (LEDS_PER_COLUMN - 1 - index);
   return (color_column * LEDS_PER_COLUMN) + row;
+}
+
+// function that turns all LEDs off of last row
+void clearLEDs(){
+  for(int k = 0; k < LEDS_PER_COLUMN; k++) {
+    leds[getLEDIndex(ORANGE, k)] = CRGB::Black;
+    leds[getLEDIndex(YELLOW, k)] = CRGB::Black;
+    leds[getLEDIndex(BLUE, k)] = CRGB::Black;
+    leds[getLEDIndex(RED, k)] = CRGB::Black;
+    leds[getLEDIndex(GREEN, k)] = CRGB::Black;
+  }
 }

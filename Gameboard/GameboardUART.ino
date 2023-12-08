@@ -2,6 +2,9 @@
 
 //file with all communication functions with other microcontrollers
 
+const int UART_PERIOD_MICROS = 104;
+
+
  /*
   * Read a byte from the UART
   * form: 0 bit, then 7 bits of information, corresponding: in order from L to R
@@ -39,8 +42,13 @@ void uartReceive() {
   // compare computed and received parity
   // if match, use value
   if(parity == inPinVal){
-
     //GAME LOGIC HERE
+    if(beatmap[beat_index] == B){
+      combo += 1;
+    } else {
+      if(combo > combo_max) combo = combo_max;
+      combo = 0;
+    }
   }
 
   // get past this last bit so as not to trigger an early interrupt

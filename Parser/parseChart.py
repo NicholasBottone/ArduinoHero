@@ -20,7 +20,8 @@ Global Variables:
 INPUT_FILE = os.path.join(os.path.dirname(__file__), 'allstar_notes.chart')
 OUTPUT_FILE = os.path.join(os.path.dirname(__file__), 'allstar_chart.h')
 DIFFICULTY_TO_PARSE = 'ExpertSingle'
-SAMPLING_RATE = 1 # 1 = quarter note, .5 = eighth note, .25 = sixteenth note, etc. 
+# 1 = quarter note, .5 = eighth note, .25 = sixteenth note, etc.
+SAMPLING_RATE = 1
 
 """
 notes.chart format:
@@ -103,11 +104,13 @@ def parse_chart_file(filepath):
                 song_data[current_section] = []
             elif '=' in line and current_section:
                 key, value = line.split('=', 1)
-                song_data[current_section].append((key.strip(), value.strip().strip('"')))
+                song_data[current_section].append(
+                    (key.strip(), value.strip().strip('"')))
             elif current_section == DIFFICULTY_TO_PARSE and '=' in line:
                 song_data[current_section].append(line)
 
     return song_data
+
 
 def process_bpm_changes(song_data, resolution, sample_rate):
     """
@@ -119,11 +122,12 @@ def process_bpm_changes(song_data, resolution, sample_rate):
 
     # Extract BPM change events from SyncTrack data
     sync_track_data = song_data.get('SyncTrack', [])
-    
+
     for tick, event in sync_track_data:
         if 'B' in event:
             # The event is something like "B 159506"
-            bpm_str = event.split(' ')[1]  # Splitting the string and getting the BPM part
+            # Splitting the string and getting the BPM part
+            bpm_str = event.split(' ')[1]
             tick = int(tick)
             bpm = float(bpm_str) / 1000  # Converting to actual BPM value
 
@@ -132,12 +136,13 @@ def process_bpm_changes(song_data, resolution, sample_rate):
 
             # Log a warning if the index is not an integer and round it
             if not index.is_integer():
-                logging.warning(f"BPM change index is not an integer, rounding: {index} to {round(index)}")
+                logging.warning(
+                    f"BPM change index is not an integer, rounding: {index} to {round(index)}")
                 index = round(index)
 
-
             bpm_values.append(bpm)
-            bpm_change_indexes.append(int(index))  # Convert to int for whole number
+            # Convert to int for whole number
+            bpm_change_indexes.append(int(index))
 
     return bpm_values, bpm_change_indexes
 
@@ -199,7 +204,8 @@ def create_arduinohero_struct(song_data):
             year = year * 10 + int(char)
 
     # Convert resolution to int
-    resolution = int(song_info_dict.get('Resolution', '192'))  # Using a default value if not found
+    resolution = int(song_info_dict.get('Resolution', '192')
+                     )  # Using a default value if not found
 
     # Initialize struct fields
     struct_song = {
@@ -212,63 +218,68 @@ def create_arduinohero_struct(song_data):
         'filename': song_info_dict.get('MusicStream', ''),
 
         'resolution': resolution,
-        'sampling_rate': SAMPLING_RATE, 
+        'sampling_rate': SAMPLING_RATE,
 
-        'beats': [], # [0b00000001, 0b00000010, ...]
-                     # Each byte represents a beat.
-                     # Each beat is not necessarily a quarter note, 
-                     # it depends on the sampling rate & resolution.
-                     # (00000000 = no note (rest), 00011111 = 5 fret note, etc.)
-        'beats_length': 0, # The length of the beats array
+        'beats': [],  # [0b00000001, 0b00000010, ...]
+        # Each byte represents a beat.
+        # Each beat is not necessarily a quarter note,
+        # it depends on the sampling rate & resolution.
+        # (00000000 = no note (rest), 00011111 = 5 fret note, etc.)
+        'beats_length': 0,  # The length of the beats array
 
-        'bpm_values': [], # [155, 160] 
-                          # (The BPMs in order that they appear in the song)
-        'bpm_values_length': 0, # The length of the beats array
-        'bpm_change_indexes': [], # [0, 815, ...]
-                                  # The index in beats[] that the bpm changes occurs at 
-                                  # (parallel array to bpm_values)
-                    
+        'bpm_values': [],  # [155, 160]
+        # (The BPMs in order that they appear in the song)
+        'bpm_values_length': 0,  # The length of the beats array
+        'bpm_change_indexes': [],  # [0, 815, ...]
+        # The index in beats[] that the bpm changes occurs at
+        # (parallel array to bpm_values)
+
     }
 
-    struct_song['bpm_values'], struct_song['bpm_change_indexes'] = process_bpm_changes(song_data, resolution, SAMPLING_RATE)
+    struct_song['bpm_values'], struct_song['bpm_change_indexes'] = process_bpm_changes(
+        song_data, resolution, SAMPLING_RATE)
     struct_song['bpm_values_length'] = len(struct_song['bpm_values'])
 
     # Process and generate the necessary information for an ArudinoHero beat chart
-    struct_song['beats'] =  process_arudinohero_beats(song_data, resolution, SAMPLING_RATE)
+    struct_song['beats'] = process_arudinohero_beats(
+        song_data, resolution, SAMPLING_RATE)
     struct_song['beats_length'] = len(struct_song['beats'])
 
     return struct_song
+
 
 def write_to_file(struct_song, output_file):
     """
     Writes the converted song data into a .h file in struct format.
     """
     with open(output_file, 'w') as file:
-        file.write('struct Song {\n')
+        file.write('#include "song.h"\n\n')
+        file.write('Song song = {\n')
         for key, value in struct_song.items():
             if isinstance(value, str):
-                file.write(f'  char *{key} = "{value}";\n')
+                file.write(f'  .{key} = "{value}";\n')
             elif isinstance(value, int):
-                file.write(f'  int {key} = {value};\n')
+                file.write(f'  .{key} = {value};\n')
             elif isinstance(value, list):
                 if key == 'beats':
                     # Convert each integer in the list to a string
                     beats_str = ', '.join(str(beat) for beat in value)
-                    file.write(f'  byte beats[] = {{{beats_str}}};\n')
+                    file.write(f'  .beats = {{{beats_str}}};\n')
                 elif key == 'bpm_values':
                     bpm_values_str = ', '.join(str(bpm) for bpm in value)
-                    file.write(f'  float bpm_values[] = {{{bpm_values_str}}};\n')
+                    file.write(f'  .bpm_values = {{{bpm_values_str}}};\n')
                 elif key == 'bpm_change_indexes':
                     bpm_indexes_str = ', '.join(str(index) for index in value)
-                    file.write(f'  int bpm_change_indexes[] = {{{bpm_indexes_str}}};\n')
+                    file.write(
+                        f'  .bpm_change_indexes = {{{bpm_indexes_str}}};\n')
         file.write('};\n')
-
 
 
 def main():
     song_data = parse_chart_file(INPUT_FILE)
     struct_song = create_arduinohero_struct(song_data)
     write_to_file(struct_song, OUTPUT_FILE)
+
 
 if __name__ == "__main__":
     main()

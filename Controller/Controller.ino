@@ -9,11 +9,12 @@ void setup() {
 
   pinMode(outPin, OUTPUT);
 
-  pinMode(RED_BUTTON, INPUT);
-  pinMode(BLUE_BUTTON, INPUT);
   pinMode(GREEN_BUTTON, INPUT);
+  pinMode(RED_BUTTON, INPUT);
   pinMode(YELLOW_BUTTON, INPUT);
-  pinMode(PURPLE_BUTTON, INPUT);
+  pinMode(BLUE_BUTTON, INPUT);
+  pinMode(ORANGE_BUTTON, INPUT);
+  
   pinMode(STRUM_BUTTON_UP, INPUT);
   pinMode(STRUM_BUTTON_DOWN, INPUT);
 
@@ -26,14 +27,14 @@ void loop() {
 
 void strumUpInterrupt(){
   byte B = 0;
-  B |= (1 << 5);
+  B |= (1 << 6);
 
   handleInterrupt(B);
 }
 
 void strumDownInterrupt() {
   byte B = 0;
-  B |= (1 << 4);
+  B |= (1 << 5);
   
   handleInterrupt(B);
 }
@@ -50,10 +51,10 @@ void handleInterrupt(byte B){
       with each bit corresponding to a button 
       press (1 being pressed) */
       // byte B = 0;
-      for(int i =6; i < 11; i++){
+      for(int i=6; i < 11; i++){
         // Serial.println((int)B, BIN);
         if(digitalRead(i) == 1) {
-          B |= (1 << (10-i));
+          B |= (1 << (i-6));
         }
       }
       uartSend(B);
@@ -65,33 +66,33 @@ void handleInterrupt(byte B){
 
 //a function to check if the buttons are wired correctly in the controller circuit
 void hardwareCheck(){
+  if(digitalRead(GREEN_BUTTON) == 1) {
+    Serial.print("G");
+
+  } else {
+    Serial.print("- ");
+  }
+
   if(digitalRead(RED_BUTTON) == 1) {
-    Serial.print("R ");
-
+    Serial.print("R");
   } else {
     Serial.print("- ");
   }
 
-  if(digitalRead(PURPLE_BUTTON) == 1) {
-    Serial.print("P ");
-  } else {
-    Serial.print("- ");
-  }
-
-  if(digitalRead(GREEN_BUTTON) == 1){
-    Serial.print("G ");
-  } else {
-    Serial.print("- ");
-  }
-
-  if(digitalRead(YELLOW_BUTTON) == 1) {
-    Serial.print("Y ");
+  if(digitalRead(YELLOW_BUTTON) == 1){
+    Serial.print("Y");
   } else {
     Serial.print("- ");
   }
 
   if(digitalRead(BLUE_BUTTON) == 1) {
-    Serial.println("B");
+    Serial.print("B");
+  } else {
+    Serial.print("- ");
+  }
+
+  if(digitalRead(ORANGE_BUTTON) == 1) {
+    Serial.println("O");
   } else {
     Serial.println("-");
   }

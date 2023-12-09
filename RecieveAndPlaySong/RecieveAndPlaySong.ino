@@ -72,7 +72,8 @@ void setup() {
   // // If DREQ is on an interrupt pin (on uno, #2 or #3) we can do background
   // // audio playing
   // musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
-
+  SD.begin(CARDCS);
+  musicPlayer.begin();
   mySerial.begin(9600);
 
 }
@@ -89,11 +90,12 @@ void loop() {
     //   mySerial.write("song 1 loaded\n");
     // }
 
-    // //stops and ends song    
-    // if(inByte == 'S'){
-    //   mySerial.write("Stop and End Song");
-    //   musicPlayer.stopPlaying();
-    // }
+    //stops and ends song    
+    if(inByte == 'S'){
+      mySerial.write("S\n");
+      Serial.write("Stop");
+      musicPlayer.stopPlaying();
+    }
 
     // //pauses from last unpaused position 
     // if(inByte == 'P'){
@@ -107,13 +109,18 @@ void loop() {
     //     musicPlayer.pausePlaying(false);
     //   }
     // }
-
     //starts songs from beginning
     if(inByte == '1'){
       //TODO: check if a song is available
         Serial.write(inByte);
         Serial.println(F("Playing track 001"));
-        mySerial.write("true\n");
+        mySerial.write("T\n");
+        // // // Set volume for left, right channels. lower numbers == louder volume!
+        // musicPlayer.setVolume(20,20);
+        // // If DREQ is on an interrupt pin (on uno, #2 or #3) we can do background
+        // // audio playing
+        // musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
+
         // musicPlayer.startPlayingFile("/track001.mp3");
     }
 
@@ -125,7 +132,7 @@ void loop() {
     }
   }
 
-  // delay(100);
+  delay(100);
 }
 
 

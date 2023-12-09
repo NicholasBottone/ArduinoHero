@@ -86,23 +86,22 @@ void updateInputs(){
 
 // Function that dictates the game logic, state of the game!!!
 state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
+  static bool isFirstCall = true; // Static variable to remember if it's the first call in the current state
   state nextState = curState;
   switch(curState) {
   
   case sSONG_MENU:
-    if(!startBtn && !upBtn){ //transition 1-1a
+    if(isFirstCall || !startBtn && !upBtn){ //transition 1-1a
       nextState = sSONG_MENU;
-      displayStart_LCD(false, false);
+      displayStart_LCD(false, false, isFirstCall);
+      isFirstCall = false;
     } 
     else if(!startBtn && upBtn){ //transition 1-1b (menu scroll)
       nextState = sSONG_MENU;
 
       Serial1.write(song_num);
 
-      //blocking function: waiting 
-      // while(!Serial1.available()){} //TODO - test if this is working
-
-      displayStart_LCD(false, true);
+      displayStart_LCD(false, true, false);
     }
     else if(startBtn && !upBtn){ //transition 1-2
       //on button press, send message to UNO to load song
@@ -121,10 +120,9 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       //   if(inByte == (int)"received") nextState = sCOUNTDOWN;
       // }
 
-      displayStart_LCD(true, false);
+      displayStart_LCD(true, false, false);
       nextState = sCOUNTDOWN;
-      //TODO -- need to set BPM;
-      // BPM = 1000; //dummy value for now
+      isFirstCall = true; // Reset for next time entering this state
     } 
     break;
     

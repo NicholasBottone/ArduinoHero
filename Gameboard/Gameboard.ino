@@ -143,14 +143,18 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
 
 
   case sUPDATE_GAME:
-    if(beatmap[beat_index] != 0b11111111){ //transition 3-3(a)
+    Serial.print("beat: ");
+    Serial.print(beat_index);
+    Serial.print("/");
+    Serial.println(curr_song.beats_length);
+    if(beatmap[beat_index] != 0b11111111 && beat_index < curr_song.beats_length){ //transition 3-3(a)
       moveLEDs(false);
       displayGame_LCD(combo_max, combo);
       nextState = sUPDATE_GAME;
       beat_index += 1;
       savedClock = millis();
       clearLEDs();
-    } else if(beatmap[beat_index] == 0b11111111 
+    } else if(((beatmap[beat_index] == 0b11111111) || beat_index >= curr_song.beats_length)  // stop note || no more beats 
         && finish_count >= 0) { //transition 3-3(b)
       finish_count -= 1;
       moveLEDs(true);

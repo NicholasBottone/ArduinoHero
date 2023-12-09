@@ -33,6 +33,10 @@ void performTimeStepDelay(){
   // Calculate the delay for the current BPM
   float calculatedDelay = 60000.0 / current_bpm;
 
+  // Adjust the delay based on the sampling_rate we sampled at. If we sampled at sampling_rate=1, then we did every quarter note. 
+  // If sampling_rate=2, we sampled every eight note and our minimum tick speed has to progress at 8th note speed (twice the bpm)
+  calculatedDelay = calculatedDelay / curr_song.sampling_rate;
+
   // Calculate drift
   int actualDelay = (int)calculatedDelay;
   cumulativeDrift += (calculatedDelay - actualDelay);
@@ -57,6 +61,8 @@ void performTimeStepDelay(){
 void moveLEDs(bool endFile){
   /* Perform the Actual Light shifting */
   
+
+
   // Shift colors down in each column
   for (int col = 0; col < 5; ++col) {
     for (int row = LEDS_PER_COLUMN - 1; row > 0; --row) {
@@ -65,6 +71,13 @@ void moveLEDs(bool endFile){
     // Set the first LED to black (off)
     columnColors[col][0] = CRGB::Black;
   }
+
+  // Bottom row default color should be grey/different to indicate the "strike" zone
+  for (int col = 0; col < 5; ++col){
+    if(columnColors[col][5] == CRGB::Black){
+    columnColors[col][5] = CRGB(10, 10, 10);
+  }}
+
   if(!endFile){
     unsigned char beat = beatmap[beat_index];
     Serial.print("BEAT: ");

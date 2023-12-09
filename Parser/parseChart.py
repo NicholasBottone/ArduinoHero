@@ -3,15 +3,17 @@
 import sys
 import os
 import logging
-import os
+import argparse
 
 # https://docs.google.com/document/d/1v2v0U-9HQ5qHeccpExDOLJ5CMPZZ3QytPmAG5WF0Kzs/mobilebasic
 # (tickEnd - tickStart) / resolution * 60.0 (seconds per minute) / bpm
 
 """
-Global Variables:
-    INPUT_FILE: Path to the input .chart file, typically located in the same directory as this script.
-    OUTPUT_FILE: Path for the output structured file, which will be in the format of a .ino header file.
+Default Variables (can be changed via command line arguments):
+    BULK: If True, the script will parse all .chart files in the specified folder.
+    INPUT_FILE: Path to the input .chart file, typically located in the same directory as this script (if BULK == False)
+    INPUT_FOLDER_PATH: Path to the folder containing the .chart files to parse (if BULK == True).
+    OUTPUT_FILE: Path for the output structured file, which will be in the format of a .h Arduino header file.
     DIFFICULTY_TO_PARSE: 
         .chart files contain note information for multiple difficulties, this variable
         selects which difficulty to parse since we only output a single version of the song
@@ -20,6 +22,12 @@ Global Variables:
         Notes sampled from .chart file @ Resolution * Sampling Rate.
         Basically, this is sample every quarter note (SAMPLING_RATE == 1), eighth note (SAMPLING_RATE == 2), etc.
 """
+BULK = True
+INPUT_FOLDER_PATH = os.path.join(
+    os.path.dirname(__file__), 'chorus_charts')
+OUTPUT_FOLDER_PATH = os.path.join(
+    os.path.dirname(__file__), 'parsed_charts')
+INPUT_FILE = os.path.join(os.path.dirname(__file__), 'song.chart')
 DIFFICULTY_TO_PARSE = 'ExpertSingle'
 # 1 = quarter note, 2 = eighth note, 4 = sixteenth note, etc.
 SAMPLING_RATE = 4
@@ -112,7 +120,7 @@ SONG_STRUCT_FIELDS = [
 ]
 
 
-def parse_chart_file(filepath):
+def parse_chart_file(filepath, difficulty, sampling_rate):
     """
     Parses the .chart file and extracts relevant information based on the specified difficulty.
     """
@@ -128,7 +136,7 @@ def parse_chart_file(filepath):
                 key, value = line.split('=', 1)
                 song_data[current_section].append(
                     (key.strip(), value.strip().strip('"')))
-            elif current_section == DIFFICULTY_TO_PARSE and '=' in line:
+            elif current_section == difficulty and '=' in line:
                 song_data[current_section].append(line)
 
     return song_data
@@ -169,7 +177,7 @@ def process_bpm_changes(song_data, resolution, sample_rate):
     return bpm_values, bpm_change_indexes
 
 
-def process_arudinohero_beats(song_data, resolution, sampling_rate):
+def process_arudinohero_beats(song_data, resolution, sampling_rate, difficulty):
     beats = []
     # Mapping of note types to their bit positions
     note_bit_positions = {
@@ -186,7 +194,7 @@ def process_arudinohero_beats(song_data, resolution, sampling_rate):
     current_sample_ticks = 0
     current_sample_byte = 0b000000
 
-    for beat in song_data[DIFFICULTY_TO_PARSE]:
+    for beat in song_data[difficulty]:
         timestamp, note_info = beat
         timestamp = int(timestamp)
 
@@ -209,7 +217,7 @@ def process_arudinohero_beats(song_data, resolution, sampling_rate):
     return beats
 
 
-def create_arduinohero_struct(song_data):
+def create_arduinohero_struct(song_data, sampling_rate, difficulty):
     """
     Converts the parsed song data into the struct format.
     """
@@ -240,7 +248,7 @@ def create_arduinohero_struct(song_data):
         'filename': song_info_dict.get('MusicStream', ''),
 
         'resolution': resolution,
-        'sampling_rate': SAMPLING_RATE,
+        'sampling_rate': sampling_rate,
 
         'beats': [],  # [0b00000001, 0b00000010, ...]
         # Each byte represents a beat.
@@ -259,12 +267,12 @@ def create_arduinohero_struct(song_data):
     }
 
     struct_song['bpm_values'], struct_song['bpm_change_indexes'] = process_bpm_changes(
-        song_data, resolution, SAMPLING_RATE)
+        song_data, resolution, sampling_rate)
     struct_song['bpm_values_length'] = len(struct_song['bpm_values'])
 
     # Process and generate the necessary information for an ArduinoHero beat chart
     struct_song['beats'] = process_arudinohero_beats(
-        song_data, resolution, SAMPLING_RATE)
+        song_data, resolution, sampling_rate, difficulty)
     struct_song['beats_length'] = len(struct_song['beats'])
 
     return struct_song
@@ -302,23 +310,24 @@ def write_to_file(struct_song, output_file, song_var_name):
         file.write('};\n')
 
 
-def parse_chart(input_file, output_path):
+def parse_chart(input_file, output_path, difficulty, sampling_rate):
     """
     Parses the specified .chart file and outputs a .h file in struct format.
     """
-    song_data = parse_chart_file(input_file)
-    struct_song = create_arduinohero_struct(song_data)
+    song_data = parse_chart_file(input_file, difficulty, sampling_rate)
+    struct_song = create_arduinohero_struct(
+        song_data, sampling_rate, difficulty)
 
     song_name = struct_song['name'].replace(' ', '_').replace(
         "'", '').replace(',', '').replace('(', '').replace(
         ')', '').replace('.', '').replace('?', '').replace(
         '!', '').replace('&', '').replace('-', '_').lower()
 
-    write_to_file(struct_song, os.path.join(os.path.dirname(
-        __file__), 'parsed_charts', f'{song_name}.h'), song_name)
+    write_to_file(struct_song, os.path.join(
+        output_path, f'{song_name}.h'), song_name)
 
 
-def bulk_parse_folder(input_folder_path, output_folder_path):
+def bulk_parse_folder(input_folder_path, output_folder_path, difficulty, sampling_rate):
     """
     Parses all .chart files in the specified folder.
     """
@@ -327,29 +336,34 @@ def bulk_parse_folder(input_folder_path, output_folder_path):
     for chart in chorus_charts:
         print(f"Processing {chart}...")
         input_file = os.path.join(input_folder_path, chart, 'notes.chart')
-        parse_chart(input_file, output_folder_path)
+        parse_chart(input_file, output_folder_path, difficulty, sampling_rate)
 
 
 if __name__ == "__main__":
-    # Default values
-    bulk = True
-    input_folder_path = os.path.join(
-        os.path.dirname(__file__), 'chorus_charts')
-    output_folder_path = os.path.join(
-        os.path.dirname(__file__), 'parsed_charts')
-    input_file = os.path.join(os.path.dirname(__file__), 'song.chart')
+    # Create the argument parser
+    parser = argparse.ArgumentParser(
+        description='Parse .chart files for ArduinoHero.')
 
-    # Parse command line arguments to determine whether to parse a single file or a folder, etc.
-    for arg in sys.argv:
-        if arg == '-s' or arg == '--single':
-            bulk = False
-        elif arg == '-i' or arg == '--input':
-            if bulk:
-                input_folder_path = sys.argv[sys.argv.index(arg) + 1]
-            else:
-                input_file = sys.argv[sys.argv.index(arg) + 1]
-        elif arg == '-o' or arg == '--output':
-            output_folder_path = sys.argv[sys.argv.index(arg) + 1]
-        elif arg == '-d' or arg == '--difficulty':
-            difficulty = sys.argv[sys.argv.index(arg) + 1]
-    bulk_parse_folder(input_folder_path, output_folder_path)
+    # Add arguments
+    parser.add_argument('-s', '--single', action='store_true',
+                        help='Parse a single file (instead of bulk folder)', default=(not BULK))
+    parser.add_argument('-i', '--input', type=str,
+                        help='Input .chart file or folder path', default=INPUT_FOLDER_PATH)
+    parser.add_argument('-o', '--output', type=str,
+                        help='Output folder path to save the h file(s)', default=OUTPUT_FOLDER_PATH)
+    parser.add_argument('-d', '--difficulty', type=str,
+                        help='Difficulty level of beat map to take from chart', default=DIFFICULTY_TO_PARSE)
+    parser.add_argument('-r', '--sampling_rate', type=int,
+                        help='Sampling rate (1 = quarter note, 2 = eighth note, 4 = sixteenth note, etc.)',
+                        default=SAMPLING_RATE)
+
+    # Parse the command line arguments
+    args = parser.parse_args()
+
+    # Run the script with the specified arguments
+    if args.single:
+        parse_chart(args.input, args.output,
+                    args.difficulty, args.sampling_rate)
+    else:
+        bulk_parse_folder(args.input, args.output,
+                          args.difficulty, args.sampling_rate)

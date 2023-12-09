@@ -76,7 +76,7 @@ void displayGame_LCD(int max_combo, int curr_combo){
 void displayEnd_LCD(int max_combo){
   lcd.clear();
   lcd.setCursor(3, 0);
-  lcd.print("GAME OVER"); //TODO
+  lcd.print("GAME OVER"); //TODO: Do the firstCall redraw as well
 
   lcd.setCursor(2, 2);
   lcd.print("max combo:");

@@ -8,9 +8,9 @@ CRGB columnColors[5][LEDS_PER_COLUMN];
 
 float cumulativeDrift = 0.0; // To track the drift over time during the loop
 
-unsigned int queue_index = 0;
+// unsigned int queue_index = 0;
 
-void performTimeStepDelay(){
+void performTimeStepDelay(unsigned long start_beat_millis){
   /* Based on the current tempo, resolution, previous drift, etc... determine the appropriate amount of delay to stay on time w/ the music*/
 
   // Check for BPM change at the current beat
@@ -27,8 +27,8 @@ void performTimeStepDelay(){
 
   // Get the current BPM
   float current_bpm = curr_song.bpm_values[bpm_index];
-  Serial.print("Current BPM: ");
-  Serial.println(current_bpm);
+  // Serial.print("Current BPM: ");
+  // Serial.println(current_bpm);
 
   // Calculate the delay for the current BPM
   float calculatedDelay = 60000.0 / current_bpm;
@@ -37,6 +37,7 @@ void performTimeStepDelay(){
   // If sampling_rate=2, we sampled every eight note and our minimum tick speed has to progress at 8th note speed (twice the bpm)
   calculatedDelay = calculatedDelay / curr_song.sampling_rate;
 
+  
   // Calculate drift
   int actualDelay = (int)calculatedDelay;
   cumulativeDrift += (calculatedDelay - actualDelay);
@@ -47,11 +48,18 @@ void performTimeStepDelay(){
       cumulativeDrift -= 1.0;
   }
 
-  Serial.print("Cumulative drift: ");
-  Serial.println(cumulativeDrift);
+  // Serial.print("Cumulative drift: ");
+  // Serial.println(cumulativeDrift);
 
   // Delay for the adjusted time
-  delay(actualDelay);
+  // delay(actualDelay); // DELAY IS NO NO, BAD DRIFT
+
+  
+  // Serial.print("actualDelay: ");
+  // Serial.println(actualDelay);
+
+  // Schedule the next update time
+  nextUpdateTime = start_beat_millis + actualDelay;
 }
 
 
@@ -60,8 +68,6 @@ void performTimeStepDelay(){
 
 void moveLEDs(bool endFile){
   /* Perform the Actual Light shifting */
-  
-
 
   // Shift colors down in each column
   for (int col = 0; col < 5; ++col) {
@@ -80,8 +86,8 @@ void moveLEDs(bool endFile){
 
   if(!endFile){
     unsigned char beat = beatmap[beat_index];
-    Serial.print("BEAT: ");
-    Serial.println((int)beat, BIN);
+    // Serial.print("BEAT: ");
+    // Serial.println((int)beat, BIN);
       if((beat & (1 << 4)) > 0) columnColors[ORANGE][0] = CRGB::OrangeRed;
       if((beat & (1 << 3)) > 0) columnColors[BLUE][0] = CRGB::Blue;
       if((beat & (1 << 2)) > 0) columnColors[YELLOW][0] = CRGB::Yellow;
@@ -99,7 +105,7 @@ void moveLEDs(bool endFile){
   FastLED.show();
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-  performTimeStepDelay();
+  // performTimeStepDelay(); // this happens in main loop now
 }
 
 

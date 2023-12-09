@@ -21,7 +21,7 @@ void setup() {
   pinMode(START_BTN, INPUT);
   pinMode(UP_BTN, INPUT);
   pinMode(UART_IN_PIN, INPUT);
-  // attachInterrupt(UART_IN_PIN, uartReceive, CHANGE);
+  attachInterrupt(UART_IN_PIN, uartReceive, CHANGE);
 
   savedClock = 0;
   start_button_pressed = false;
@@ -141,28 +141,34 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
 
 
   case sUPDATE_GAME:
-    Serial.print("beat: ");
-    Serial.print(beat_index);
-    Serial.print("/");
-    Serial.println(curr_song.beats_length);
-    if(beatmap[beat_index] != 0b11111111 && beat_index < curr_song.beats_length){ //transition 3-3(a)
-      moveLEDs(false);
-      displayGame_LCD(combo_max, combo);
-      nextState = sUPDATE_GAME;
-      beat_index += 1;
-      savedClock = millis();
-      clearLEDs();
-    } else if(((beatmap[beat_index] == 0b11111111) || beat_index >= curr_song.beats_length)  // stop note || no more beats 
-        && finish_count >= 0) { //transition 3-3(b)
-      finish_count -= 1;
-      moveLEDs(true);
-      displayGame_LCD(combo_max, combo);
-      nextState = sUPDATE_GAME;
-    } else if(finish_count < 0){ //transition 3-4
-      clearLEDs();
-      nextState = sGAME_OVER;
-      savedClock = mils;
-      finish_count = 6;
+    if(millis() >= nextUpdateTime){
+      unsigned long start_beat_millis = millis(); 
+      Serial.print("beat: ");
+      Serial.print(beat_index);
+      Serial.print("/");
+      Serial.println(curr_song.beats_length);
+      if(beatmap[beat_index] != 0b11111111 && beat_index < curr_song.beats_length){ //transition 3-3(a)
+        moveLEDs(false);
+        displayGame_LCD(combo_max, combo);
+        nextState = sUPDATE_GAME;
+        beat_index += 1;
+        savedClock = millis();
+        performTimeStepDelay(start_beat_millis);
+        // clearLEDs();
+      } else if(((beatmap[beat_index] == 0b11111111) || beat_index >= curr_song.beats_length)  // stop note || no more beats 
+          && finish_count >= 0) { //transition 3-3(b)
+        finish_count -= 1;
+        performTimeStepDelay(start_beat_millis);
+        moveLEDs(true);
+        displayGame_LCD(combo_max, combo);
+        nextState = sUPDATE_GAME;
+      } else if(finish_count < 0){ //transition 3-4
+        performTimeStepDelay(start_beat_millis);
+        // clearLEDs();
+        nextState = sGAME_OVER;
+        savedClock = mils;
+        finish_count = 6;
+      }
     }
     break;
   

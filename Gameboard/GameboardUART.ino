@@ -44,21 +44,26 @@ void uartReceive() {
   if(parity == inPinVal){
     //GAME LOGIC HERE
     Serial.println("COMBO CHECK");
+    Serial.print("beat: ");
     Serial.print(beatmap[beat_index], BIN);
-    Serial.print(" vs ");
+    Serial.print(" vs input:");
     Serial.println(B, BIN);
-    if(beatmap[beat_index] == B){
+      Serial.print(" (");
+    Serial.print(B & 0b00011111);
+    Serial.print(") ");
+    if((beatmap[beat_index] & 0b00011111) == (B & 0b00011111)){
+      Serial.println("COMBO ADDED WOOO!");
       combo += 1;
     } else {
-      if(combo > combo_max) combo = combo_max;
+      if(combo > combo_max) combo_max = combo;
       combo = 0;
     }
   }
 
-  // get past this last bit so as not to trigger an early interrupt
-  uartDelay(lastClockTime);
+  // // get past this last bit so as not to trigger an early interrupt
+  // uartDelay(lastClockTime);
   
-  Serial.println((int)B, BIN);
+  // Serial.println((int)B, BIN);
 }
 
 /*

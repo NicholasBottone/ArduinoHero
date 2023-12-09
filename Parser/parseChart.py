@@ -89,6 +89,27 @@ struct Song {
 };
 """
 
+"""
+This is necessary because we must ensure the fields are outputted in the
+same order as they are defined in the struct.
+"""
+SONG_STRUCT_FIELDS = [
+    "name",
+    "artist",
+    "charter",
+    "album",
+    "year",
+    "genre",
+    "filename",
+    "resolution",
+    "sampling_rate",
+    "bpm_values",
+    "bpm_change_indexes",
+    "bpm_values_length",
+    "beats",
+    "beats_length"
+]
+
 
 def parse_chart_file(filepath):
     """
@@ -248,37 +269,39 @@ def create_arduinohero_struct(song_data):
     return struct_song
 
 
-def write_to_file(struct_song, output_file):
+def write_to_file(struct_song, output_file, song_var_name):
     """
     Writes the converted song data into a .h file in struct format.
     """
+
     with open(output_file, 'w') as file:
         file.write('#include "song.h"\n\n')
-        file.write('Song song = {\n')
-        for key, value in struct_song.items():
+        file.write(f'Song {song_var_name} = {{\n')
+        for key in SONG_STRUCT_FIELDS:
+            value = struct_song[key]
             if isinstance(value, str):
-                file.write(f'  .{key} = "{value}";\n')
+                file.write(f'  /* {key} */ "{value}",\n')
             elif isinstance(value, int):
-                file.write(f'  .{key} = {value};\n')
+                file.write(f'  /* {key} */ {value},\n')
             elif isinstance(value, list):
+                array_str = ', '.join(str(elem) for elem in value)
                 if key == 'beats':
-                    # Convert each integer in the list to a string
-                    beats_str = ', '.join(str(beat) for beat in value)
-                    file.write(f'  .beats = {{{beats_str}}};\n')
+                    file.write(f'  /* beats */ (byte[]) {{{array_str}}},\n')
                 elif key == 'bpm_values':
-                    bpm_values_str = ', '.join(str(bpm) for bpm in value)
-                    file.write(f'  .bpm_values = {{{bpm_values_str}}};\n')
-                elif key == 'bpm_change_indexes':
-                    bpm_indexes_str = ', '.join(str(index) for index in value)
                     file.write(
-                        f'  .bpm_change_indexes = {{{bpm_indexes_str}}};\n')
+                        f'  /* bpm_values */ (float[]) {{{array_str}}},\n')
+                elif key == 'bpm_change_indexes':
+                    file.write(
+                        f'  /* bpm_change_indexes */ (int[]) {{{array_str}}},\n')
         file.write('};\n')
 
 
 def main():
     song_data = parse_chart_file(INPUT_FILE)
     struct_song = create_arduinohero_struct(song_data)
-    write_to_file(struct_song, OUTPUT_FILE)
+    song_var_name = struct_song['name'].replace(' ', '_').replace(
+        "'", '').replace(',', '').replace('(', '').replace(')', '').lower()
+    write_to_file(struct_song, OUTPUT_FILE, song_var_name)
 
 
 if __name__ == "__main__":

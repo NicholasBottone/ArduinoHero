@@ -1,5 +1,10 @@
 [Song]
 {
+  Name = "All Star"
+  Artist = "Smash Mouth"
+  Charter = "Daintii"
+  Album = "Astro Lounge"
+  Year = 1999
   Offset = 0
   Resolution = 192
   Player2 = bass
@@ -9,6 +14,7 @@
   Genre = "rock"
   MediaType = "cd"
   GuitarStream = "song.mp3"
+  MusicStream = "song.ogg"
 }
 [SyncTrack]
 {

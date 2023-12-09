@@ -71,9 +71,27 @@ Song test_song = {
     /* beats_length */ 10,
   };
 
+  Song test_song_2 = { // tests bpm changes too, gets slower after first seq of 5
+    /* name */ "Test Song 2",
+    /* artist */ "arduinoherohomies",
+    /* charter */ "señor david",
+    /* album */ "bdw vibes",
+    /* year */ 2023,
+    /* genre */ "!?",
+    /* filename */ "song.ogg",
+    /* resolution */ 192,
+    /* sampling_rate */ 1,
+    /* bpm_values */ (float[]) {150.0, 50.0},
+    /* bpm_change_indexes */ (int[]) {0, 5},
+    /* bpm_values_length */ 2,
+    /* beats */ (byte[]) {0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000/*, 0b11111111*/},
+    /* beats_length */ 10,
+  };
+
 
   Song songList[] = {
-    test_song,
+      test_song,
+      test_song_2,
       all_star,
       dream_on,
       dream_on_doublesample

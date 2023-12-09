@@ -12,9 +12,11 @@
     int resolution;
     int sampling_rate;
 
-    // Each float represents a bmp change during the song
+    // The BPMs in order that they appear in the song
     float *bpm_values;
+    // The index in beats[] that the bpm changes occurs at (parallel array to bpm_values)
     int *bpm_change_indexes;
+    // Length of both the bpm_values and bpm-change_indexes arrays
     int bpm_values_length;
 
     // Each byte represents a beat

@@ -6,7 +6,6 @@ bool beat_queue[6][5];
 // Create a 2D array to represent the 5 columns and their respective LED colors
 CRGB columnColors[5][LEDS_PER_COLUMN];
 
-
 float cumulativeDrift = 0.0; // To track the drift over time during the loop
 
 unsigned int queue_index = 0;
@@ -14,32 +13,46 @@ unsigned int queue_index = 0;
 void performTimeStepDelay(){
   /* Based on the current tempo, resolution, previous drift, etc... determine the appropriate amount of delay to stay on time w/ the music*/
 
-  // Check for bpm change (if the beat_index == value of the next item in bpm_change_indexes)
-  // TODO ...? remember to increment and blah blah blah
+  // Check for BPM change at the current beat
+  if (bpm_index < curr_song.bpm_values_length - 1 &&
+      beat_index == curr_song.bpm_change_indexes[bpm_index + 1]) {
+      Serial.print("BPM changing at beat ");
+      Serial.print(beat_index);
+      Serial.print(" from ");
+      Serial.print(curr_song.bpm_values[bpm_index]);
+      Serial.print(" to ");
+      bpm_index++; // Update to the next BPM value
+      Serial.println(curr_song.bpm_values[bpm_index]);
+  }
 
-  // Get the BPM that we should be moving the notes at
+  // Get the current BPM
   float current_bpm = curr_song.bpm_values[bpm_index];
-  Serial.print("current bpm:");
+  Serial.print("Current BPM: ");
   Serial.println(current_bpm);
 
-  float calculatedDelay = 60000.0 / current_bpm; // TODO: Incorporate resolution and eventually stretch etc...
+  // Calculate the delay for the current BPM
+  float calculatedDelay = 60000.0 / current_bpm;
 
   // Calculate drift
-  int actualDelay = (int)calculatedDelay; // Truncated delay time
-  cumulativeDrift += (calculatedDelay - actualDelay); // Update cumulative drift
+  int actualDelay = (int)calculatedDelay;
+  cumulativeDrift += (calculatedDelay - actualDelay);
 
   // Compensate for drift
   if (cumulativeDrift >= 1.0) {
-    actualDelay += 1; // Compensate by adding 1 ms to the delay
-    cumulativeDrift -= 1.0; // Subtract the compensated drift
+      actualDelay += 1;
+      cumulativeDrift -= 1.0;
   }
 
-  Serial.print("cumulative drift: ");
+  Serial.print("Cumulative drift: ");
   Serial.println(cumulativeDrift);
 
   // Delay for the adjusted time
   delay(actualDelay);
 }
+
+
+
+
 
 void moveLEDs(bool endFile){
   /* Perform the Actual Light shifting */

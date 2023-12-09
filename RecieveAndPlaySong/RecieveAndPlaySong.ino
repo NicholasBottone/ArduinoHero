@@ -45,9 +45,6 @@ SoftwareSerial mySerial (rxPin, txPin);
 #define DREQ 3       // VS1053 Data request, ideally an Interrupt pin
 
 Adafruit_VS1053_FilePlayer musicPlayer = 
-  // // create breakout-example object!
-  // Adafruit_VS1053_FilePlayer(BREAKOUT_RESET, BREAKOUT_CS, BREAKOUT_DCS, DREQ, CARDCS);
-  // create shield-example object!
   Adafruit_VS1053_FilePlayer(SHIELD_RESET, SHIELD_CS, SHIELD_DCS, DREQ, CARDCS);
   
 void setup() {
@@ -55,25 +52,28 @@ void setup() {
   while (!Serial) {}
   Serial.println("Adafruit VS1053 Simple Test");
 
-  // if (! musicPlayer.begin()) { // initialise the music player
-  //    Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
-  //    while (1);
-  // }
-  // Serial.println(F("VS1053 found"));
-  // if (!SD.begin(CARDCS)) {
-  //   Serial.println(F("SD failed, or not present"));
-  //   while (1);  // don't do anything more
-  // }
-  // // list files
-  // printDirectory(SD.open("/"), 0);
+  if (! musicPlayer.begin()) { // initialise the music player
+     Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
+     while (1);
+  }
+  Serial.println(F("VS1053 found"));
+  if (!SD.begin(CARDCS)) {
+    Serial.println(F("SD failed, or not present"));
+    while (1);  // don't do anything more
+  }
+  // list files
+  printDirectory(SD.open("/"), 0);
   
-  // // Set volume for left, right channels. lower numbers == louder volume!
-  // musicPlayer.setVolume(20,20);
-  // // If DREQ is on an interrupt pin (on uno, #2 or #3) we can do background
-  // // audio playing
-  // musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
+  // Set volume for left, right channels. lower numbers == louder volume!
+  musicPlayer.setVolume(20,20);
+  // If DREQ is on an interrupt pin (on uno, #2 or #3) we can do background
+  // audio playing
+  musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
   SD.begin(CARDCS);
   musicPlayer.begin();
+
+  // musicPlayer.startPlayingFile("/track001.mp3");
+
   mySerial.begin(9600);
 
 }
@@ -90,12 +90,12 @@ void loop() {
     //   mySerial.write("song 1 loaded\n");
     // }
 
-    //stops and ends song    
-    if(inByte == 'S'){
-      mySerial.write("S\n");
-      Serial.write("Stop");
-      musicPlayer.stopPlaying();
-    }
+    // //stops and ends song    
+    // if(inByte == 'S'){
+    //   mySerial.write("S\n");
+    //   Serial.write("Stop");
+    //   musicPlayer.stopPlaying();
+    // }
 
     // //pauses from last unpaused position 
     // if(inByte == 'P'){
@@ -121,15 +121,15 @@ void loop() {
         // // audio playing
         // musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
 
-        // musicPlayer.startPlayingFile("/track001.mp3");
+        musicPlayer.startPlayingFile("/track001.mp3");
     }
 
-    if(inByte == '2'){
-        Serial.println(F("Playing track 002"));
-        mySerial.write("song 2 playing\n");
-        // musicPlayer.startPlayingFile("/track002.mp3");
+    // if(inByte == '2'){
+    //     Serial.println(F("Playing track 002"));
+    //     mySerial.write("song 2 playing\n");
+    //     // musicPlayer.startPlayingFile("/track002.mp3");
 
-    }
+    // }
   }
 
   delay(100);

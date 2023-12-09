@@ -7,19 +7,20 @@ const int songName_len = sizeof(songList) / sizeof(songList[0]);
 
 // Function that displays the starting screen of the game
 void displayStart_LCD(bool startButtonPress, bool upButtonPress){
+  // TODO: Screen flickers during track selection (and also in game over - probably need a small delay or something?... or?...)
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Track Selection:");
 
   lcd.setCursor(1, 1);
-  lcd.print(song_num);
+  lcd.print(song_num+1);
   lcd.print(": ");
   lcd.setCursor(4, 1);
   lcd.print(songList[song_num].name);
 
   if(upButtonPress){
     lcd.setCursor(1, 1);
-    lcd.print(song_num);
+    lcd.print(song_num+1);
     lcd.print(": ");
     lcd.setCursor(4, 1);
     song_num = (song_num+1) % (songName_len) ;
@@ -31,6 +32,9 @@ void displayStart_LCD(bool startButtonPress, bool upButtonPress){
     lcd.clear();
     lcd.setCursor(5, 0);
     lcd.print(songList[song_num].name);
+
+    curr_song = songList[song_num];
+    beatmap = curr_song.beats;
   }
 }
 

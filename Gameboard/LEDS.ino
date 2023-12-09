@@ -39,8 +39,8 @@ void moveLEDs(bool endFile){
 
     // if(notecount % 4 == 0){
       if((beat & (1 << 4)) > 0) columnColors[ORANGE][0] = CRGB::OrangeRed;
-      if((beat & (1 << 3)) > 0) columnColors[YELLOW][0] = CRGB::Yellow;
-      if((beat & (1 << 2)) > 0) columnColors[BLUE][0] = CRGB::Blue;
+      if((beat & (1 << 3)) > 0) columnColors[BLUE][0] = CRGB::Blue;
+      if((beat & (1 << 2)) > 0) columnColors[YELLOW][0] = CRGB::Yellow;
       if((beat & (1 << 1)) > 0) columnColors[RED][0] = CRGB::Red;
       if((beat & (1 << 0)) > 0) columnColors[GREEN][0] = CRGB::Green;
     // }

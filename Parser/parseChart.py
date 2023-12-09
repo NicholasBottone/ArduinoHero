@@ -15,13 +15,13 @@ Global Variables:
         to be used by the ArduinoHero game.
     SAMPLING_RATE: 
         Notes sampled from .chart file @ Resolution * Sampling Rate.
-        Basically, this is sample every quarter note (SAMPLING_RATE == 1), eighth note (SAMPLING_RATE == .5), etc.
+        Basically, this is sample every quarter note (SAMPLING_RATE == 1), eighth note (SAMPLING_RATE == 2), etc.
 """
-INPUT_FILE = os.path.join(os.path.dirname(__file__), 'allstar_notes.chart')
-OUTPUT_FILE = os.path.join(os.path.dirname(__file__), 'allstar_chart.h')
+INPUT_FILE = os.path.join(os.path.dirname(__file__), 'notes.chart')
+OUTPUT_FILE = os.path.join(os.path.dirname(__file__), 'dream_on_chart_v2.h')
 DIFFICULTY_TO_PARSE = 'ExpertSingle'
-# 1 = quarter note, .5 = eighth note, .25 = sixteenth note, etc.
-SAMPLING_RATE = 1
+# 1 = quarter note, 2 = eighth note, 4 = sixteenth note, etc.
+SAMPLING_RATE = 2
 
 """
 notes.chart format:

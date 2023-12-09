@@ -11,56 +11,88 @@ float cumulativeDrift = 0.0; // To track the drift over time during the loop
 // unsigned int queue_index = 0;
 
 void performTimeStepDelay(unsigned long start_beat_millis){
-  /* Based on the current tempo, resolution, previous drift, etc... determine the appropriate amount of delay to stay on time w/ the music*/
+    // Get the current BPM
+    float current_bpm = curr_song.bpm_values[bpm_index];
 
-  // Check for BPM change at the current beat
-  if (bpm_index < curr_song.bpm_values_length - 1 &&
-      beat_index == curr_song.bpm_change_indexes[bpm_index + 1]) {
-      Serial.print("BPM changing at beat ");
-      Serial.print(beat_index);
-      Serial.print(" from ");
-      Serial.print(curr_song.bpm_values[bpm_index]);
-      Serial.print(" to ");
-      bpm_index++; // Update to the next BPM value
-      Serial.println(curr_song.bpm_values[bpm_index]);
-  }
+    // Calculate the delay for the current BPM
+    float calculatedDelay = 60000.0 / current_bpm / curr_song.sampling_rate;
 
-  // Get the current BPM
-  float current_bpm = curr_song.bpm_values[bpm_index];
-  // Serial.print("Current BPM: ");
-  // Serial.println(current_bpm);
+    // Calculate and compensate for drift
+    int actualDelay = (int)calculatedDelay;
+    cumulativeDrift += (calculatedDelay - actualDelay);
+    if (cumulativeDrift >= 1.0) {
+        actualDelay += 1;
+        cumulativeDrift -= 1.0;
+    }
 
-  // Calculate the delay for the current BPM
-  float calculatedDelay = 60000.0 / current_bpm;
+    // Schedule the next update time
+    nextUpdateTime = start_beat_millis + actualDelay;
 
-  // Adjust the delay based on the sampling_rate we sampled at. If we sampled at sampling_rate=1, then we did every quarter note. 
-  // If sampling_rate=2, we sampled every eight note and our minimum tick speed has to progress at 8th note speed (twice the bpm)
-  calculatedDelay = calculatedDelay / curr_song.sampling_rate;
-
-  
-  // Calculate drift
-  int actualDelay = (int)calculatedDelay;
-  cumulativeDrift += (calculatedDelay - actualDelay);
-
-  // Compensate for drift
-  if (cumulativeDrift >= 1.0) {
-      actualDelay += 1;
-      cumulativeDrift -= 1.0;
-  }
-
-  // Serial.print("Cumulative drift: ");
-  // Serial.println(cumulativeDrift);
-
-  // Delay for the adjusted time
-  // delay(actualDelay); // DELAY IS NO NO, BAD DRIFT
-
-  
-  // Serial.print("actualDelay: ");
-  // Serial.println(actualDelay);
-
-  // Schedule the next update time
-  nextUpdateTime = start_beat_millis + actualDelay;
+    // Check for BPM change for the next beat
+    if (bpm_index < curr_song.bpm_values_length - 1 &&
+        beat_index == curr_song.bpm_change_indexes[bpm_index + 1]) {
+        Serial.print("BPM changing at beat ");
+        Serial.print(beat_index);
+        Serial.print(" from ");
+        Serial.print(curr_song.bpm_values[bpm_index]);
+        Serial.print(" to ");
+        bpm_index++; // Move to the next BPM value for the next beat
+        Serial.println(curr_song.bpm_values[bpm_index]);
+    }
 }
+
+
+// void performTimeStepDelay(unsigned long start_beat_millis){
+//   /* Based on the current tempo, resolution, previous drift, etc... determine the appropriate amount of delay to stay on time w/ the music*/
+
+//   // Check for BPM change at the current beat
+//   if (bpm_index < curr_song.bpm_values_length - 1 &&
+//       beat_index == curr_song.bpm_change_indexes[bpm_index + 1]) {
+//       Serial.print("BPM changing at beat ");
+//       Serial.print(beat_index);
+//       Serial.print(" from ");
+//       Serial.print(curr_song.bpm_values[bpm_index]);
+//       Serial.print(" to ");
+//       bpm_index++; // Update to the next BPM value
+//       Serial.println(curr_song.bpm_values[bpm_index]);
+//   }
+
+//   // Get the current BPM
+//   float current_bpm = curr_song.bpm_values[bpm_index];
+//   // Serial.print("Current BPM: ");
+//   // Serial.println(current_bpm);
+
+//   // Calculate the delay for the current BPM
+//   float calculatedDelay = 60000.0 / current_bpm;
+
+//   // Adjust the delay based on the sampling_rate we sampled at. If we sampled at sampling_rate=1, then we did every quarter note. 
+//   // If sampling_rate=2, we sampled every eight note and our minimum tick speed has to progress at 8th note speed (twice the bpm)
+//   calculatedDelay = calculatedDelay / curr_song.sampling_rate;
+
+  
+//   // Calculate drift
+//   int actualDelay = (int)calculatedDelay;
+//   cumulativeDrift += (calculatedDelay - actualDelay);
+
+//   // Compensate for drift
+//   if (cumulativeDrift >= 1.0) {
+//       actualDelay += 1;
+//       cumulativeDrift -= 1.0;
+//   }
+
+//   // Serial.print("Cumulative drift: ");
+//   // Serial.println(cumulativeDrift);
+
+//   // Delay for the adjusted time
+//   // delay(actualDelay); // DELAY IS NO NO, BAD DRIFT
+
+  
+//   // Serial.print("actualDelay: ");
+//   // Serial.println(actualDelay);
+
+//   // Schedule the next update time
+//   nextUpdateTime = start_beat_millis + actualDelay;
+// }
 
 
 

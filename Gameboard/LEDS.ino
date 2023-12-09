@@ -34,8 +34,8 @@ void moveLEDs(bool endFile){
   if(!endFile){
     unsigned char beat = beatmap[beat_index];
     
-    // Serial.print("BEAT: ");
-    // Serial.println((int)beat, BIN);
+    Serial.print("BEAT: ");
+    Serial.println((int)beat, BIN);
 
     // if(notecount % 4 == 0){
       if((beat & (1 << 4)) > 0) columnColors[ORANGE][0] = CRGB::OrangeRed;

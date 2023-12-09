@@ -12,7 +12,9 @@ unsigned long debounceDelay = 200;
 
 // This function sets up the ledsand tells the controller about them
 void setup() {
+  Serial.print("a");
   Serial.begin(115200);   // initialise serial monitor port
+  Serial.print("b");
   while (!Serial) {}
   Serial1.begin(9600);  // initialise Serial1
 
@@ -148,8 +150,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       beat_index += 1;
       savedClock = millis();
       clearLEDs();
-    } else if((beatmap[beat_index] == 0b11111111 ||
-        BEATMAP_SIZE <= beat_index) 
+    } else if(beatmap[beat_index] == 0b11111111 
         && finish_count >= 0) { //transition 3-3(b)
       finish_count -= 1;
       moveLEDs(true);

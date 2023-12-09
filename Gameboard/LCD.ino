@@ -1,10 +1,8 @@
 // #include <LiquidCrystal.h>
 #include "Gameboard.h"
 
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
-const int songName_len = 3;
-const char* songNames[songName_len] = {"Song 1", "Song 2", "Song 3"};
+// Number of Songs in the songs.h file
+const int songName_len = sizeof(songList) / sizeof(songList[0]);
 
 
 // Function that displays the starting screen of the game
@@ -13,20 +11,26 @@ void displayStart_LCD(bool startButtonPress, bool upButtonPress){
   lcd.setCursor(0, 0);
   lcd.print("Track Selection:");
 
-  lcd.setCursor(5, 1);
-  lcd.print(songNames[song_num]);
+  lcd.setCursor(1, 1);
+  lcd.print(song_num);
+  lcd.print(": ");
+  lcd.setCursor(4, 1);
+  lcd.print(songList[song_num].name);
 
   if(upButtonPress){
-    lcd.setCursor(5, 1);
+    lcd.setCursor(1, 1);
+    lcd.print(song_num);
+    lcd.print(": ");
+    lcd.setCursor(4, 1);
     song_num = (song_num+1) % (songName_len) ;
     Serial.println(song_num);
-    lcd.print(songNames[song_num]);
+    lcd.print(songList[song_num].name);
   }
 
   if(startButtonPress){
     lcd.clear();
     lcd.setCursor(5, 0);
-    lcd.print(songNames[song_num]);
+    lcd.print(songList[song_num].name);
   }
 }
 

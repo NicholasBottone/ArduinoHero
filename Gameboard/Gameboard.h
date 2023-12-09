@@ -23,21 +23,14 @@
 #define START_BTN 6
 #define UP_BTN A1 //TODO - see if this works
 
-// This is an array of leds.  One item for each led in your strip.
+// LED Setup
 CRGB leds[NUM_LEDS];
-const unsigned int BEATMAP_SIZE = 26;
-
 LiquidCrystal lcd(rs, e, d4, d5, d6, d7);
 
-// unsigned char beatmap[BEATMAP_SIZE] = {
-//   0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011,
-//   0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011,
-//   0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011,
-//   0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011,
-//   0b00001101, 0b00000001, 0b00011000, 0b00001101, 0b00000011,
-  // 0b11111111};
-unsigned char *beatmap = songList[0].beats;
 
+// unsigned char *beatmap = songList[0].beats;
+Song curr_song;
+unsigned char *beatmap = new unsigned char(0b11111111); // By default is a beatmap with only a "terminate" note (0b11111111 = 255 = the stop code)
 unsigned int beat_index = 0;
 int song_num = 0;
 

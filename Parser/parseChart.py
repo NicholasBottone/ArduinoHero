@@ -3,6 +3,7 @@
 import sys
 import os
 import logging
+import os
 
 # https://docs.google.com/document/d/1v2v0U-9HQ5qHeccpExDOLJ5CMPZZ3QytPmAG5WF0Kzs/mobilebasic
 # (tickEnd - tickStart) / resolution * 60.0 (seconds per minute) / bpm
@@ -21,7 +22,7 @@ Global Variables:
 """
 DIFFICULTY_TO_PARSE = 'ExpertSingle'
 # 1 = quarter note, 2 = eighth note, 4 = sixteenth note, etc.
-SAMPLING_RATE = 2
+SAMPLING_RATE = 4
 
 """
 notes.chart format:
@@ -177,7 +178,7 @@ def process_arudinohero_beats(song_data, resolution, sampling_rate):
         '2': 0b000100,  # Yellow
         '3': 0b001000,  # Blue
         '4': 0b010000,  # Orange
-        '7': 0b1000000,  # Open note
+        '7': 0b100000,  # Open note
     }
 
     # Adjusting ticks_per_sample based on sampling_rate
@@ -274,6 +275,11 @@ def write_to_file(struct_song, output_file, song_var_name):
     Writes the converted song data into a .h file in struct format.
     """
 
+    print(f"Writing to {output_file}...")
+
+    # Create the necessary directories if they don't exist
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
     with open(output_file, 'w') as file:
         file.write('#include "song.h"\n\n')
         file.write(f'Song {song_var_name} = {{\n')
@@ -346,3 +352,4 @@ if __name__ == "__main__":
             output_folder_path = sys.argv[sys.argv.index(arg) + 1]
         elif arg == '-d' or arg == '--difficulty':
             difficulty = sys.argv[sys.argv.index(arg) + 1]
+    bulk_parse_folder(input_folder_path, output_folder_path)

@@ -6,26 +6,28 @@ const int songName_len = sizeof(songList) / sizeof(songList[0]);
 
 
 // Function that displays the starting screen of the game
-void displayStart_LCD(bool startButtonPress, bool upButtonPress){
-  // TODO: Screen flickers during track selection (and also in game over - probably need a small delay or something?... or?...)
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Track Selection:");
+void displayStart_LCD(bool startButtonPress, bool upButtonPress, bool firstCall){
+  static int lastSongNum = -1; // Static variable to remember the last song number
+  bool screenNeedsUpdate = false;
 
-  lcd.setCursor(1, 1);
-  lcd.print(song_num+1);
-  lcd.print(": ");
-  lcd.setCursor(4, 1);
-  lcd.print(songList[song_num].name);
+  // Check if it's the first call or if the track has changed
+  if (firstCall || upButtonPress){
+    song_num = (firstCall ? song_num : (song_num + 1) % songName_len);
+    screenNeedsUpdate = (lastSongNum != song_num);
+  }
 
-  if(upButtonPress){
+  if (firstCall || startButtonPress || screenNeedsUpdate) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Track Selection:");
+
     lcd.setCursor(1, 1);
-    lcd.print(song_num+1);
+    lcd.print(song_num + 1);
     lcd.print(": ");
     lcd.setCursor(4, 1);
-    song_num = (song_num+1) % (songName_len) ;
-    Serial.println(song_num);
     lcd.print(songList[song_num].name);
+
+    lastSongNum = song_num; // Update the last song number
   }
 
   if(startButtonPress){
@@ -39,6 +41,7 @@ void displayStart_LCD(bool startButtonPress, bool upButtonPress){
     bpm_change_indexes = curr_song.bpm_change_indexes;
   }
 }
+
 
 
 // Function that displays the countdown screen

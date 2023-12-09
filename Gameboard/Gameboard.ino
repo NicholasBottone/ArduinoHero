@@ -180,7 +180,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       combo_max = 0;
       start_button_pressed = false;
       nextState = sSONG_MENU;
-      beat_index = 0;
+      beat_index = START_BEAT_INDEX;
     }
     break;
   

@@ -34,8 +34,10 @@ unsigned char *beatmap = new unsigned char(0b11111111); // By default is a beatm
 float *bpm_values = {};
 int *bpm_change_indexes = {};
 
+const int START_BEAT_INDEX = 6; // Skip 0-5 so that notes land in the strike zone instead of being timed w/ their entry on the top row
+
 /* Song runtime data*/
-unsigned int beat_index = 0; // idxof current beat the song is on
+unsigned int beat_index = START_BEAT_INDEX; // idxof current beat the song is on
 unsigned int bpm_index = 0; // idxof current bpm the song is playing at 
 int song_num = 0; // index in the songList
 

@@ -54,8 +54,26 @@ Song dream_on_doublesample = {
   /* beats_length */ 701,
 };
 
+Song test_song = {
+    /* name */ "Test Song",
+    /* artist */ "arduinoherohomies",
+    /* charter */ "señor david",
+    /* album */ "bdw vibes",
+    /* year */ 2023,
+    /* genre */ "!?",
+    /* filename */ "song.ogg",
+    /* resolution */ 192,
+    /* sampling_rate */ 1,
+    /* bpm_values */ (float[]) {107.0},
+    /* bpm_change_indexes */ (int[]) {0},
+    /* bpm_values_length */ 18,
+    /* beats */ (byte[]) {0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b11111111},
+    /* beats_length */ 392,
+  };
+
 
   Song songList[] = {
+    test_song,
       all_star,
       dream_on,
       dream_on_doublesample

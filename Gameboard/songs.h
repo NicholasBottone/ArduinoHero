@@ -64,7 +64,7 @@ Song test_song = {
     /* filename */ "song.ogg",
     /* resolution */ 192,
     /* sampling_rate */ 1,
-    /* bpm_values */ (float[]) {107.0},
+    /* bpm_values */ (float[]) {150.0},
     /* bpm_change_indexes */ (int[]) {0},
     /* bpm_values_length */ 1,
     /* beats */ (byte[]) {0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00000001, 0b00000010, 0b00000100, 0b00001000, 0b00010000/*, 0b11111111*/},

@@ -35,6 +35,8 @@ void displayStart_LCD(bool startButtonPress, bool upButtonPress){
 
     curr_song = songList[song_num];
     beatmap = curr_song.beats;
+    bpm_values = curr_song.bpm_values;
+    bpm_change_indexes = curr_song.bpm_change_indexes;
   }
 }
 

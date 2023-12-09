@@ -28,11 +28,16 @@ CRGB leds[NUM_LEDS];
 LiquidCrystal lcd(rs, e, d4, d5, d6, d7);
 
 
-// unsigned char *beatmap = songList[0].beats;
+/* Loaded Song Data*/
 Song curr_song;
 unsigned char *beatmap = new unsigned char(0b11111111); // By default is a beatmap with only a "terminate" note (0b11111111 = 255 = the stop code)
-unsigned int beat_index = 0;
-int song_num = 0;
+float *bpm_values = {};
+int *bpm_change_indexes = {};
+
+/* Song runtime data*/
+unsigned int beat_index = 0; // idxof current beat the song is on
+unsigned int bpm_index = 0; // idxof current bpm the song is playing at 
+int song_num = 0; // index in the songList
 
 /* Player game data */
 int combo = 0;

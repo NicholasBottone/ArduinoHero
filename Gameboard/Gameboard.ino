@@ -1,5 +1,6 @@
 #include <FastLED.h>
 #include "Gameboard.h"
+#include "songs.h"
 
 // #define CHECK_UNO_COMMUNICATION
 

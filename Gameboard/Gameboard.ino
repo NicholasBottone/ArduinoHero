@@ -172,21 +172,39 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
     }
     break;
   
-  case sGAME_OVER:
-    displayEnd_LCD(combo_max);
-    if((mils - savedClock) < 3000 || !start_button_pressed) { // transition 4-4
-      nextState = sGAME_OVER;
-    } else if((mils - savedClock) >= 3000 && start_button_pressed) { // transition 4-1
-      savedClock = mils;
-      countdown = 3; // reset countdown for next track selection
-      score = 0;
-      combo = 0;
-      combo_max = 0;
-      start_button_pressed = false;
-      nextState = sSONG_MENU;
-      beat_index = START_BEAT_INDEX;
+ case sGAME_OVER:
+    if (isFirstCall) {
+        // Call displayEnd_LCD with isFirstCall = true on the first entry
+        displayEnd_LCD(combo_max, start_button_pressed, true);
+
+        // Additional initialization specific to the first call of sGAME_OVER
+        // ...
+
+        // Set isFirstCall to false for subsequent calls
+        isFirstCall = false;
+    } else {
+        // Call displayEnd_LCD with isFirstCall = false on subsequent entries
+        displayEnd_LCD(combo_max, start_button_pressed, false);
+    }
+
+    // Rest of the GAME OVER logic
+    if ((mils - savedClock) < 3000 || !start_button_pressed) {
+        nextState = sGAME_OVER;
+    } else if ((mils - savedClock) >= 3000 && start_button_pressed) {
+        // Reset variables for the next game
+        savedClock = mils;
+        countdown = 3;
+        score = 0;
+        combo = 0;
+        combo_max = 0;
+        start_button_pressed = false;
+        isFirstCall = true; // Reset isFirstCall for the next time GAME OVER is reached
+        nextState = sSONG_MENU;
+        beat_index = START_BEAT_INDEX;
     }
     break;
+
+
   
   default:
     nextState = curState;

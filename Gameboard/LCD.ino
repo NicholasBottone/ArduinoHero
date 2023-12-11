@@ -73,13 +73,30 @@ void displayGame_LCD(int max_combo, int curr_combo){
 
 
 // Function that displays the end screen, which displays the player's max combo 
-void displayEnd_LCD(int max_combo){
-  lcd.clear();
-  lcd.setCursor(3, 0);
-  lcd.print("GAME OVER"); //TODO: Do the firstCall redraw as well
+void displayEnd_LCD(int max_combo, bool startButtonPress, bool firstCall){
+  static bool lastStateStartButtonPress = false; // Remember the last button press state
 
-  lcd.setCursor(2, 2);
-  lcd.print("max combo:");
-  lcd.setCursor(13, 2);
-  lcd.print(max_combo);
+  // Determine if the screen needs an update
+  bool screenNeedsUpdate = firstCall || (startButtonPress != lastStateStartButtonPress);
+
+  // Update the screen based on the conditions
+  if (screenNeedsUpdate) {
+    lcd.clear();
+    if (!startButtonPress) {
+      // Display the game over screen
+      lcd.setCursor(3, 0);
+      lcd.print("GAME OVER");
+
+      lcd.setCursor(2, 2);
+      lcd.print("max combo:");
+      lcd.setCursor(13, 2);
+      lcd.print(max_combo);
+    } else {
+      // Additional display logic when start button is pressed
+      lcd.setCursor(0, 0);
+      lcd.print("Start button pressed");
+    }
+
+    lastStateStartButtonPress = startButtonPress; // Update the last button press state
+  }
 }

@@ -113,7 +113,7 @@ void moveLEDs(bool endFile){
   // Bottom row default color should be grey/different to indicate the "strike" zone
   for (int col = 0; col < 5; ++col){
     if(columnColors[col][5] == CRGB::Black){
-    columnColors[col][5] = CRGB(10, 10, 10);
+    columnColors[col][5] = CRGB(20, 20, 20);
   }}
 
   if(!endFile){

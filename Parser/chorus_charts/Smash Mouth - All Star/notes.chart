@@ -14,7 +14,7 @@
   Genre = "rock"
   MediaType = "cd"
   GuitarStream = "song.mp3"
-  MusicStream = "song.ogg"
+  MusicStream = "allstars.mp3"
 }
 [SyncTrack]
 {

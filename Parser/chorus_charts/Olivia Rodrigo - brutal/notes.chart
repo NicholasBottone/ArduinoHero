@@ -13,7 +13,7 @@
   PreviewEnd = 0
   Genre = "Pop Punk"
   MediaType = "cd"
-  MusicStream = "song.ogg"
+  MusicStream = "brutalol.ogg"
 }
 [SyncTrack]
 {

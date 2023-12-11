@@ -13,7 +13,7 @@
   PreviewEnd = 0
   Genre = "Dance"
   MediaType = "cd"
-  MusicStream = "song.ogg"
+  MusicStream = "harderbe.ogg"
 }
 [SyncTrack]
 {

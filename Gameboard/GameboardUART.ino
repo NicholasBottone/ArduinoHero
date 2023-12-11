@@ -51,7 +51,10 @@ void uartReceive() {
       Serial.print(" (");
     Serial.print(B & 0b00011111);
     Serial.print(") ");
-    if((beatmap[beat_index] & 0b00011111) == (B & 0b00011111)){
+    // TODO: Track last beat_index  that we got points at to prevent double points
+    if((beatmap[beat_index-4] & 0b00011111) == (B & 0b00011111) ||
+      (beatmap[beat_index-5] & 0b00011111) == (B & 0b00011111) ||
+      (beatmap[beat_index-6] & 0b00011111) == (B & 0b00011111)){
       Serial.println("COMBO ADDED WOOO!");
       combo += 1;
     } else {

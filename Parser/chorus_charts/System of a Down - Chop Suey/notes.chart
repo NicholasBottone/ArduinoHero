@@ -13,7 +13,7 @@
   PreviewEnd = 0
   Genre = "Metal"
   MediaType = "cd"
-  MusicStream = "song.ogg"
+  MusicStream = "chopsuey.ogg"
 }
 [SyncTrack]
 {

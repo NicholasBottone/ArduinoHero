@@ -66,10 +66,17 @@ void displayCoundown_LCD(int countdown){
 // shows current combo and max combo
 void displayGame_LCD(int max_combo, int curr_combo){
   lcd.clear();
-  lcd.setCursor(0, 0);
+
+  lcd.setCursor(0, 1);
+  lcd.print("Score:");
+
+  lcd.setCursor(7, 1);
+  lcd.print(score);
+
+  lcd.setCursor(0, 1);
   lcd.print("Combo:");
 
-  lcd.setCursor(7, 0);
+  lcd.setCursor(7, 1);
   lcd.print(curr_combo);
 }
 

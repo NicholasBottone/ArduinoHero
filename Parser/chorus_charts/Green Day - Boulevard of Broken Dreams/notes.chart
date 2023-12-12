@@ -13,7 +13,7 @@
   PreviewEnd = 0
   Genre = "Punk Rock"
   MediaType = "cd"
-  MusicStream = "song.ogg"
+  MusicStream = "boulevar.ogg"
 }
 [SyncTrack]
 {

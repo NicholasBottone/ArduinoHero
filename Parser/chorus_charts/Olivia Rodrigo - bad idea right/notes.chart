@@ -13,7 +13,7 @@
   PreviewEnd = 0
   Genre = "Pop-Rock"
   MediaType = "cd"
-  MusicStream = "song.ogg"
+  MusicStream = "badidear.ogg"
 }
 [SyncTrack]
 {

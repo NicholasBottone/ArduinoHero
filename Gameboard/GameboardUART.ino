@@ -43,22 +43,38 @@ void uartReceive() {
   // if match, use value
   if(parity == inPinVal){
     //GAME LOGIC HERE
-    Serial.println("COMBO CHECK");
-    Serial.print(beatmap[beat_index], BIN);
-    Serial.print(" vs ");
-    Serial.println(B, BIN);
-    if(beatmap[beat_index] == B){
+    // Serial.println("COMBO CHECK");
+    // Serial.print("beat: ");
+    // Serial.print(beatmap[beat_index], BIN);
+    // Serial.print(" vs input:");
+    // Serial.println(B, BIN);
+    //   Serial.print(" (");
+    // Serial.print(B & 0b00011111);
+    // Serial.print(") ");
+    // TODO: Track last beat_index  that we got points at to prevent double points
+    if((beatmap[beat_index-4] & 0b00011111) == (B & 0b00011111) ||
+      (beatmap[beat_index-5] & 0b00011111) == (B & 0b00011111) ||
+      (beatmap[beat_index-6] & 0b00011111) == (B & 0b00011111)){
+      score += 1;
+      Serial.print("score: ");
+      Serial.println(score);
       combo += 1;
+      if(combo > combo_max) combo_max = combo;
+      Serial.print("current combo: ");
+      Serial.print(combo);
+      Serial.print(" (max: ");
+      Serial.print(combo_max);
+      Serial.println(")");
     } else {
-      if(combo > combo_max) combo = combo_max;
+      if(combo > combo_max) combo_max = combo;
       combo = 0;
     }
   }
 
-  // get past this last bit so as not to trigger an early interrupt
-  uartDelay(lastClockTime);
+  // // get past this last bit so as not to trigger an early interrupt
+  // uartDelay(lastClockTime);
   
-  Serial.println((int)B, BIN);
+  // Serial.println((int)B, BIN);
 }
 
 /*

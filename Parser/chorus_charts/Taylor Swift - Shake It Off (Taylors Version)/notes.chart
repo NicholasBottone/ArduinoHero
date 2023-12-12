@@ -13,7 +13,7 @@
   PreviewEnd = 0
   Genre = "Pop"
   MediaType = "hey hey hey"
-  MusicStream = "song.ogg"
+  MusicStream = "shakeito.ogg"
 }
 [SyncTrack]
 {

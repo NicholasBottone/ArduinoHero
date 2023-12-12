@@ -58,44 +58,45 @@ void loop() {
   //receiving from MKR and printing loop if there is a byte to read
   if(mySerial.available()) {
     char inByte = (mySerial.read());
-    Serial.write(inByte);
-
     //stops and ends song    
     if(inByte == 'S'){
-      mySerial.write("S\n");
-      Serial.write("Stop");
+      // mySerial.write("S\n");
+      // Serial.write("Stop");
       musicPlayer.stopPlaying();
     }
 
     //starts songs from beginning
     if(inByte == '1'){
-      delay(3180);
+      delay(3280);
       //Currently Boulevard
       musicPlayer.startPlayingFile("/track001.mp3");
     }
 
     if(inByte == '2'){
-      delay(1300);
+      delay(1400);
       //currently Deja Vu
       musicPlayer.startPlayingFile("/track002.ogg");
     }
 
     if(inByte == '3'){
       //Currently Shake It Off
+      delay(100);
       musicPlayer.startPlayingFile("/track003.ogg");
     }
 
     if(inByte == '4'){
+      delay(850);
       //Currently Harder Better Faster
       musicPlayer.startPlayingFile("/track004.mp3");
     }
 
     if(inByte == '5'){
+      delay(1150);
       //Currently All I Want For Christmas Is You
-      musicPlayer.startPlayingFile("/track005.ogg");
+      musicPlayer.startPlayingFile("/track005.mp3");
     }
 
   }
 
-  delay(100);
+  // delay(100);
 }

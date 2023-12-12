@@ -6,7 +6,7 @@
 // #define CHECK_UNO_COMMUNICATION
 
 char data;
-static int savedClock, finish_count;
+static int savedClock, finish_count, songToPlay;
 static bool start_button_pressed, up_button_pressed;
 
 unsigned long lastDebounceTime = 0;
@@ -100,13 +100,13 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
     else if(!startBtn && upBtn){ //transition 1-1b (menu scroll)
       nextState = sSONG_MENU;
 
-      Serial1.write(song_num);
+      // Serial1.write(song_num);
 
       displayStart_LCD(false, true, false);
     }
     else if(startBtn){ //transition 1-2
       unsigned long currentMillis = millis();
-      displayStart_LCD(true, false, false);
+      songToPlay = displayStart_LCD(true, false, false);
       nextState = sCOUNTDOWN;
       isFirstCall = true; // Reset for next time entering this state
     } 
@@ -121,7 +121,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
     } else if(countdown < 0){ //transition 2-3
       // // send message to UNO to load song
       // // TODO - send current index of song we're on
-      // Serial1.write("1");
+      Serial1.write((char)songToPlay + '1');
       displayGame_LCD(combo_max, combo);
       savedClock = mils;
       nextState = sUPDATE_GAME;
@@ -164,6 +164,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
     break;
   
   case sGAME_OVER:
+    Serial1.write("S");
     if (isFirstCall) {
         // Call displayEnd_LCD with isFirstCall = true on the first entry
         displayEnd_LCD(combo_max, start_button_pressed, true);
@@ -208,7 +209,8 @@ void checkUnoCommunication(){
   if((currentMillisDebounce - lastDebounceTime > debounceDelay) &&
     digitalRead(START_BTN)){
     Serial1.write("1");
-    Serial.println("send: 1");
+    Serial.print("send: ");
+    Serial.println("1");
     lastDebounceTime = currentMillisDebounce;
   }
   if((currentMillisDebounce - lastDebounceTime > debounceDelay) &&

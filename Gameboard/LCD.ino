@@ -6,7 +6,7 @@ const int songName_len = sizeof(songList) / sizeof(songList[0]);
 
 
 // Function that displays the starting screen of the game
-void displayStart_LCD(bool startButtonPress, bool upButtonPress, bool firstCall){
+int displayStart_LCD(bool startButtonPress, bool upButtonPress, bool firstCall){
   static int lastSongNum = -1; // Static variable to remember the last song number
   bool screenNeedsUpdate = false;
 
@@ -40,6 +40,8 @@ void displayStart_LCD(bool startButtonPress, bool upButtonPress, bool firstCall)
     bpm_values = curr_song.bpm_values;
     bpm_change_indexes = curr_song.bpm_change_indexes;
   }
+
+  return song_num;
 }
 
 

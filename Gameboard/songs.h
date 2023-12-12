@@ -231,18 +231,18 @@
 
   Song songList[] = {
     boulevard_of_broken_dreams_4, // REALLY GOOD ONE
-    chop_suey,
-    harder_better_faster_stronger_impossible,
-    all_star,
+    deja_vu,
     shake_it_off_taylors_version,
     harder_better_faster_stronger,
-    deja_vu,
-    test_song,
-    test_song_2,
-    bad_idea_right,
-    dream_on, // too hard to line up
-    dream_on_doublesample, // too hard to line up
-    dream_on_quadsample // too hard to line up
+    // chop_suey,
+    // harder_better_faster_stronger_impossible,
+    // all_star,
+    // test_song,
+    // test_song_2,
+    // bad_idea_right,
+    // dream_on, // too hard to line up
+    // dream_on_doublesample, // too hard to line up
+    // dream_on_quadsample // too hard to line up
   };
 
 #endif

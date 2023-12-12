@@ -87,10 +87,17 @@ void displayEnd_LCD(int max_combo, bool startButtonPress, bool firstCall){
       lcd.setCursor(3, 0);
       lcd.print("GAME OVER");
 
-      lcd.setCursor(2, 2);
-      lcd.print("max combo:");
-      lcd.setCursor(13, 2);
+      // Display score and max combo on the same line
+      lcd.setCursor(0, 1); // Set cursor to start of second row
+      lcd.print("Sc:");
+      lcd.print(score);
+      lcd.print(" Cm:");
       lcd.print(max_combo);
+
+      Serial.print("score: ");
+      Serial.println(score);
+      Serial.print("max combo: ");
+      Serial.println(max_combo);
     } else {
       // Additional display logic when start button is pressed
       lcd.setCursor(0, 0);

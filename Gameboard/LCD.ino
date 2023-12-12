@@ -67,10 +67,10 @@ void displayCoundown_LCD(int countdown){
 void displayGame_LCD(int max_combo, int curr_combo){
   lcd.clear();
 
-  lcd.setCursor(0, 1);
+  lcd.setCursor(0, 0);
   lcd.print("Score:");
 
-  lcd.setCursor(7, 1);
+  lcd.setCursor(7, 0);
   lcd.print(score);
 
   lcd.setCursor(0, 1);

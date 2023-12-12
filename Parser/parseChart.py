@@ -30,7 +30,7 @@ OUTPUT_FOLDER_PATH = os.path.join(
 INPUT_FILE = os.path.join(os.path.dirname(__file__), 'song.chart')
 DIFFICULTY_TO_PARSE = 'ExpertSingle'
 # 1 = quarter note, 2 = eighth note, 4 = sixteenth note, etc.
-SAMPLING_RATE = 4
+SAMPLING_RATE = [1, 2, 4]
 
 """
 notes.chart format:
@@ -324,7 +324,7 @@ def parse_chart(input_file, output_path, difficulty, sampling_rate):
         '!', '').replace('&', '').replace('-', '_').lower()
 
     write_to_file(struct_song, os.path.join(
-        output_path, f'{song_name}.h'), song_name)
+        output_path, f'{song_name}_{sampling_rate}.h'), song_name)
 
 
 def bulk_parse_folder(input_folder_path, output_folder_path, difficulty, sampling_rate):
@@ -336,7 +336,8 @@ def bulk_parse_folder(input_folder_path, output_folder_path, difficulty, samplin
     for chart in chorus_charts:
         print(f"Processing {chart}...")
         input_file = os.path.join(input_folder_path, chart, 'notes.chart')
-        parse_chart(input_file, output_folder_path, difficulty, sampling_rate)
+        for rate in SAMPLING_RATE:
+            parse_chart(input_file, output_folder_path, difficulty, rate)
 
 
 if __name__ == "__main__":

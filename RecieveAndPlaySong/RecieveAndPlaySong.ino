@@ -90,6 +90,11 @@ void loop() {
       musicPlayer.startPlayingFile("/track004.mp3");
     }
 
+    if(inByte == '5'){
+      //Currently All I Want For Christmas Is You
+      musicPlayer.startPlayingFile("/track005.ogg");
+    }
+
   }
 
   delay(100);

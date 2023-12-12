@@ -31,13 +31,13 @@ void performTimeStepDelay(unsigned long start_beat_millis){
     // Check for BPM change for the next beat
     if (bpm_index < curr_song.bpm_values_length - 1 &&
         beat_index - 5 == curr_song.bpm_change_indexes[bpm_index + 1]) {
-        Serial.print("BPM changing at beat ");
-        Serial.print(beat_index);
-        Serial.print(" from ");
-        Serial.print(curr_song.bpm_values[bpm_index]);
-        Serial.print(" to ");
+        // Serial.print("BPM changing at beat ");
+        // Serial.print(beat_index);
+        // Serial.print(" from ");
+        // Serial.print(curr_song.bpm_values[bpm_index]);
+        // Serial.print(" to ");
         bpm_index++; // Move to the next BPM value for the next beat
-        Serial.println(curr_song.bpm_values[bpm_index]);
+        // Serial.println(curr_song.bpm_values[bpm_index]);
     }
 }
 

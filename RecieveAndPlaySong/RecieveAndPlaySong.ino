@@ -45,6 +45,9 @@ SoftwareSerial mySerial (rxPin, txPin);
 #define DREQ 3       // VS1053 Data request, ideally an Interrupt pin
 
 Adafruit_VS1053_FilePlayer musicPlayer = 
+  // // create breakout-example object!
+  // Adafruit_VS1053_FilePlayer(BREAKOUT_RESET, BREAKOUT_CS, BREAKOUT_DCS, DREQ, CARDCS);
+  // create shield-example object!
   Adafruit_VS1053_FilePlayer(SHIELD_RESET, SHIELD_CS, SHIELD_DCS, DREQ, CARDCS);
   
 void setup() {
@@ -69,11 +72,9 @@ void setup() {
   // If DREQ is on an interrupt pin (on uno, #2 or #3) we can do background
   // audio playing
   musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
-  SD.begin(CARDCS);
-  musicPlayer.begin();
 
-  // musicPlayer.startPlayingFile("/track001.mp3");
-
+  // SD.begin(CARDCS);
+  // musicPlayer.begin();
   mySerial.begin(9600);
 
 }
@@ -90,12 +91,12 @@ void loop() {
     //   mySerial.write("song 1 loaded\n");
     // }
 
-    // //stops and ends song    
-    // if(inByte == 'S'){
-    //   mySerial.write("S\n");
-    //   Serial.write("Stop");
-    //   musicPlayer.stopPlaying();
-    // }
+    //stops and ends song    
+    if(inByte == 'S'){
+      mySerial.write("S\n");
+      Serial.write("Stop");
+      musicPlayer.stopPlaying();
+    }
 
     // //pauses from last unpaused position 
     // if(inByte == 'P'){
@@ -124,12 +125,12 @@ void loop() {
         musicPlayer.startPlayingFile("/track001.mp3");
     }
 
-    // if(inByte == '2'){
-    //     Serial.println(F("Playing track 002"));
-    //     mySerial.write("song 2 playing\n");
-    //     // musicPlayer.startPlayingFile("/track002.mp3");
+    if(inByte == '2'){
+        Serial.println(F("Playing track 002"));
+        mySerial.write("song 2 playing\n");
+        // musicPlayer.startPlayingFile("/track002.mp3");
 
-    // }
+    }
   }
 
   delay(100);
@@ -161,4 +162,3 @@ void printDirectory(File dir, int numTabs) {
      entry.close();
    }
 }
-

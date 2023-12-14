@@ -180,9 +180,9 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
     }
 
     // Rest of the GAME OVER logic
-    if ((mils - savedClock) < 3000 || !start_button_pressed) {
+    if ((mils - savedClock) < 3000 || !start_button_pressed) { //transition 4-4
         nextState = sGAME_OVER;
-    } else if ((mils - savedClock) >= 3000 && start_button_pressed) {
+    } else if ((mils - savedClock) >= 3000 && start_button_pressed) { //transition 4-1
         // Reset variables for the next game
         savedClock = mils;
         countdown = 3;

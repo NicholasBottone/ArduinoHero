@@ -8,8 +8,7 @@ CRGB columnColors[5][LEDS_PER_COLUMN];
 
 float cumulativeDrift = 0.0; // To track the drift over time during the loop
 
-// unsigned int queue_index = 0;
-
+// this function delays between notes in a beatmap based on BPM and drift
 void performTimeStepDelay(unsigned long start_beat_millis){
     // Get the current BPM
     float current_bpm = curr_song.bpm_values[bpm_index];
@@ -141,7 +140,7 @@ void moveLEDs(bool endFile){
 }
 
 
-//TODO -- need documentation of this function
+// function that gets the LED index for a given color column
 int getLEDIndex(ColorColumn color_column, int index) {
   int row = color_column % 2 == 0 ? index : (LEDS_PER_COLUMN - 1 - index);
   return (color_column * LEDS_PER_COLUMN) + row;

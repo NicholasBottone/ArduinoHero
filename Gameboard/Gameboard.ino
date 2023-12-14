@@ -192,7 +192,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
         start_button_pressed = false;
         isFirstCall = true; // Reset isFirstCall for next run
         nextState = sSONG_MENU;
-        beat_index = START_BEAT_INDEX;
+        beat_index = 0;
         bpm_index = 0;
     }
     break;

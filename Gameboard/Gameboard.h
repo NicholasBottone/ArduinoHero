@@ -78,7 +78,7 @@ void uartReceive();
 
 // LCD screen functions
 void displayStart_LCD(bool upButtonPress, bool startButtonPress);
-void displayCoundown_LCD(int countdown);
+void displayCountdown_LCD(int countdown);
 void displayGame_LCD(int max_combo, int curr_combo);
 void displayEnd_LCD(int max_combo);
 

@@ -47,7 +47,7 @@ int displayStart_LCD(bool startButtonPress, bool upButtonPress, bool firstCall){
 
 
 // Function that displays the countdown screen
-void displayCoundown_LCD(int countdown){
+void displayCountdown_LCD(int countdown){
   //start a count down
   lcd.clear();
   lcd.setCursor(7, 0);

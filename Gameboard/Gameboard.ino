@@ -39,6 +39,15 @@ void setup() {
   lcd.setCursor(0, 1);
   lcd.print("**Arduino Hero**");
 
+  // Set up NVIC:
+  NVIC_SetPriority(TC3_IRQn, 0);
+  NVIC_EnableIRQ(TC3_IRQn);
+
+  // Clear and prep WDT
+  NVIC_DisableIRQ(WDT_IRQn);
+  NVIC_ClearPendingIRQ(WDT_IRQn);
+  NVIC_SetPriority(WDT_IRQn, 0);
+
   Serial.println("setup complete");
   delay(1500);
 }
@@ -114,7 +123,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
     
   case sCOUNTDOWN:
     if((mils - savedClock) >= 1000 && countdown >= 0){ //transition 2-2
-      displayCoundown_LCD(countdown);
+      displayCountdown_LCD(countdown);
       countdown -= 1;
       savedClock = mils;
       nextState = sCOUNTDOWN;

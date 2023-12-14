@@ -1,6 +1,6 @@
 #include "Controller.h"
 
-// #define CALIBRATE
+// #define CALIBRATE // used for checking hardware
 
 void setup() {
   Serial.begin(9600);
@@ -22,36 +22,37 @@ void setup() {
   attachInterrupt(STRUM_BUTTON_DOWN, strumDownInterrupt, RISING);
 }
 
-void loop() {
-}
+void loop() {}
 
+// interrupt handler for strum up.
 void strumUpInterrupt(){
   byte B = 0;
   B |= (1 << 6);
-
   handleInterrupt(B);
 }
 
+// interrupt handler for strum down.
 void strumDownInterrupt() {
   byte B = 0;
   B |= (1 << 5);
-  
   handleInterrupt(B);
 }
 
-void handleInterrupt(byte B){
+/**
+
+*/
+void handleInterrupt(byte B) {
   unsigned long currentMillis = millis();
   if (currentMillis - lastDebounceTime > debounceDelay) {
     #if defined(CALIBRATE)
       hardwareCheck();
-    
+
     #else
       noInterrupts();
       /*create byte to represent the user event,
       with each bit corresponding to a button 
       press (1 being pressed) */
-      // byte B = 0;
-      for(int i=6; i < 11; i++){
+      for(int i = 6; i < 11; i++){
         // Serial.println((int)B, BIN);
         if(digitalRead(i) == 1) {
           B |= (1 << (i-6));

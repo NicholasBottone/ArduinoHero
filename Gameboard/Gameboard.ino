@@ -39,14 +39,7 @@ void setup() {
   lcd.setCursor(0, 1);
   lcd.print("**Arduino Hero**");
 
-  // Set up NVIC:
-  NVIC_SetPriority(TC3_IRQn, 0);
-  NVIC_EnableIRQ(TC3_IRQn);
-
-  // Clear and prep WDT
-  NVIC_DisableIRQ(WDT_IRQn);
-  NVIC_ClearPendingIRQ(WDT_IRQn);
-  NVIC_SetPriority(WDT_IRQn, 0);
+  setupWatchdogTimer();
 
   Serial.println("setup complete");
   delay(1500);
@@ -133,6 +126,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       Serial1.write((char)songToPlay + '1');
       displayGame_LCD(combo_max, combo);
       savedClock = mils;
+      enableWatchdogTimer();
       nextState = sUPDATE_GAME;
     }
     break;
@@ -145,10 +139,12 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       nextState = sGAME_OVER;
       savedClock = mils;
       finish_count = 6;
+      disableWatchdogTimer();
     } else if(millis() >= nextUpdateTime){
       unsigned long start_beat_millis = millis(); 
       if(beatmap[beat_index] != 0b11111111 && 
         beat_index < curr_song.beats_length){ //transition 3-3(a)
+        resetWatchdogTimer(); // pet the watchdog timer
         moveLEDs(false);
         displayGame_LCD(combo_max, combo);
         nextState = sUPDATE_GAME;
@@ -158,6 +154,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       } else if(((beatmap[beat_index] == 0b11111111) ||
           beat_index >= curr_song.beats_length)
           && finish_count >= 0) { //transition 3-3(b)
+        resetWatchdogTimer(); // pet the watchdog timer
         finish_count -= 1;
         performTimeStepDelay(start_beat_millis);
         moveLEDs(true);
@@ -168,6 +165,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
         nextState = sGAME_OVER;
         savedClock = mils;
         finish_count = 6;
+        disableWatchdogTimer();
       }
     }
     break;

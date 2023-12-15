@@ -82,4 +82,11 @@ void displayCountdown_LCD(int countdown);
 void displayGame_LCD(int max_combo, int curr_combo);
 void displayEnd_LCD(int max_combo);
 
+// Watchdog timer functions
+void setupWatchdogTimer(); // for call on initialization
+void enableWatchdogTimer(); // for call inside the FSM when we want to start the timer
+void disableWatchdogTimer(); // for call inside the FSM when we want to stop the timer
+void resetWatchdogTimer(); // for repeatedly calling to "pet" the watchdog timer
+void WDT_Handler(); // for handling the watchdog timer interrupt
+
 #endif // GAMEBOARD_H

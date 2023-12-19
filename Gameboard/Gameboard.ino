@@ -176,9 +176,6 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
         // Call displayEnd_LCD with isFirstCall = true on the first entry
         displayEnd_LCD(combo_max, start_button_pressed, true);
 
-        // Additional initialization specific to the first call of sGAME_OVER
-        // ...
-
         // Set isFirstCall to false for subsequent calls
         isFirstCall = false;
     } else {

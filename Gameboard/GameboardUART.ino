@@ -70,11 +70,7 @@ void uartReceive() {
       combo = 0;
     }
   }
-
-  // // get past this last bit so as not to trigger an early interrupt
-  // uartDelay(lastClockTime);
   
-  // Serial.println((int)B, BIN);
 }
 
 /*

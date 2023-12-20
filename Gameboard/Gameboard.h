@@ -1,8 +1,15 @@
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
 
-#include <FastLED.h>
-#include <LiquidCrystal.h>
+#define TESTING
+
+#ifdef TESTING
+  #include "MockFastLED.h"
+  #include "MockLiquidCrystal.h"
+#else
+  #include <FastLED.h>
+  #include <LiquidCrystal.h>
+#endif
 
 #define LEDS_PER_COLUMN 6
 #define NUM_LEDS (LEDS_PER_COLUMN * 5)
@@ -25,7 +32,7 @@
 #define START_BTN 6
 #define UP_BTN A1
 
-// LED Setup
+// LED & LCD Setup
 CRGB leds[NUM_LEDS];
 LiquidCrystal lcd(rs, e, d4, d5, d6, d7);
 

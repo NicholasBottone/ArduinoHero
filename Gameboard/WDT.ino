@@ -32,11 +32,13 @@ void setupWatchdogTimer() {
  * Called when the game/song starts.
  */
 void enableWatchdogTimer() {
+  #ifndef TESTING
   WDT->CTRL.bit.ENABLE = 1;
   while (WDT->STATUS.bit.SYNCBUSY);
   WDT->INTENSET.bit.EW = 1;
 
   Serial.println("WDT enabled");
+  #endif
 }
 
 /**
@@ -44,10 +46,12 @@ void enableWatchdogTimer() {
  * Called when the game/song ends.
  */
 void disableWatchdogTimer() {
+  #ifndef TESTING
   WDT->CTRL.bit.ENABLE = 0;
   WDT->INTENCLR.bit.EW = 0;
 
   Serial.println("WDT disabled");
+  #endif
 }
 
 /**

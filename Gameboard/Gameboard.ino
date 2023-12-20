@@ -137,7 +137,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
 
 
   case sUPDATE_GAME:
-    if(start_button_pressed || up_button_pressed) { //transition 3-4(a)
+    if(startBtn || upBtn) { //transition 3-4(a)
       clearLEDs();
       //TODO - need to stop song
       nextState = sGAME_OVER;
@@ -178,19 +178,19 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
     Serial1.write("S");
     if (isFirstCall) {
         // Call displayEnd_LCD with isFirstCall = true on the first entry
-        displayEnd_LCD(combo_max, start_button_pressed, true);
+        displayEnd_LCD(combo_max, startBtn, true);
 
         // Set isFirstCall to false for subsequent calls
         isFirstCall = false;
     } else {
         // Call displayEnd_LCD with isFirstCall = false on subsequent entries
-        displayEnd_LCD(combo_max, start_button_pressed, false);
+        displayEnd_LCD(combo_max, startBtn, false);
     }
 
     // Rest of the GAME OVER logic
-    if ((mils - savedClock) < 3000 || !start_button_pressed) { //transition 4-4
+    if ((mils - savedClock) < 3000 || !startBtn) { //transition 4-4
         nextState = sGAME_OVER;
-    } else if ((mils - savedClock) >= 3000 && start_button_pressed) { //transition 4-1
+    } else if ((mils - savedClock) >= 3000 && startBtn) { //transition 4-1
         // Reset variables for the next game
         savedClock = mils;
         countdown = 3;

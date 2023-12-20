@@ -13,7 +13,7 @@ void runTestSuite() {
   
   // state updateFSM(state curState, long mils, bool startBtn, bool upBtn)
   // void setMillis(unsigned long millis)
-  // unsigned long millis()
+  // unsigned long myMillis()
   // 1 = sSONG_MENU, 2=sCOUNTDOWN, 3=sUPDATE_GAME, 4=sGAME_OVER
 
   // Todo: Reset updateFSM?
@@ -23,7 +23,7 @@ void runTestSuite() {
   // checks isFirstCall = False
   setMillis(10000);
   outputFunctionsCalled = "";
-  state curState = updateFSM(sSONG_MENU, millis(), false, false);
+  state curState = updateFSM(sSONG_MENU, myMillis(), false, false);
   if (curState != sSONG_MENU) {
     Serial.println("Test #1 1-1a failed");
     Serial.println("Expected: sSONG_MENU");
@@ -36,9 +36,9 @@ void runTestSuite() {
     Serial.print("Actual: ");
     Serial.println(isFirstCall);
     return;
-  } else if (outputFunctionsCalled != "displayStart_LCD(false, false, false)\n") {
+  } else if (outputFunctionsCalled != "displayStart_LCD(0, 0, 1)\n") {
     Serial.println("Test #1 1-1a failed");
-    Serial.println("Expected: displayStart_LCD(false, false, false)");
+    Serial.println("Expected: displayStart_LCD(0, 0, 1)");
     Serial.print("Actual: ");
     Serial.println(outputFunctionsCalled);
     return;
@@ -51,16 +51,16 @@ void runTestSuite() {
   // 1-1, mils=5000, start_button=false, up=true
   setMillis(5000);
   outputFunctionsCalled = "";
-  curState = updateFSM(sSONG_MENU, millis(), false, true);
+  curState = updateFSM(sSONG_MENU, myMillis(), false, true);
   if (curState != sSONG_MENU) {
     Serial.println("Test #2 1-1b failed");
     Serial.println("Expected: sSONG_MENU");
     Serial.print("Actual: ");
     Serial.println(curState);
     return;
-  } else if (outputFunctionsCalled != "displayStart_LCD(false, true, false)\n") {
+  } else if (outputFunctionsCalled != "displayStart_LCD(0, 1, 0)\n") {
     Serial.println("Test #2 1-1b failed");
-    Serial.println("Expected: displayStart_LCD(false, true, false)");
+    Serial.println("Expected: displayStart_LCD(0, 1, 0)");
     Serial.print("Actual: ");
     Serial.println(outputFunctionsCalled);
     return;
@@ -72,7 +72,7 @@ void runTestSuite() {
   // mocked displayStart_LCD(true, false, false)
   setMillis(5500);
   outputFunctionsCalled = "";
-  curState = updateFSM(sSONG_MENU, millis(), true, false);
+  curState = updateFSM(sSONG_MENU, myMillis(), true, false);
   if (curState != sCOUNTDOWN) {
     Serial.println("Test #3 1-2 failed");
     Serial.println("Expected: sCOUNTDOWN");
@@ -85,24 +85,24 @@ void runTestSuite() {
     Serial.print("Actual: ");
     Serial.println(isFirstCall);
     return;
-  } else if (outputFunctionsCalled != "displayStart_LCD(true, false, false)\n") {
+  } else if (outputFunctionsCalled != "displayStart_LCD(1, 0, 0)\n") {
     Serial.println("Test #3 1-2 failed");
-    Serial.println("Expected: displayStart_LCD(true, false, false)");
+    Serial.println("Expected: displayStart_LCD(1, 0, 0)");
     Serial.print("Actual: ");
     Serial.println(outputFunctionsCalled);
     return;
   }
 
-  // Test 4 //
+  // Test 4
   // 2-2, mils=7000, start_button=false, end_button=false
   // set savedClock=6000, countdown=2 //
-  // checks savedClock=7000, countdown=1 //
+  // checks savedClock=6000, countdown=1 //
   // mocked displayCountdown_LCD(countdown=1) TODO Mock these
   setMillis(7000);
   outputFunctionsCalled = "";
   savedClock = 6000;
   countdown = 2;
-  curState = updateFSM(sCOUNTDOWN, millis(), false, false);
+  curState = updateFSM(sCOUNTDOWN, myMillis(), false, false);
   if (curState != sCOUNTDOWN) {
     Serial.println("Test #4 2-2 failed");
     Serial.println("Expected: sCOUNTDOWN");
@@ -121,9 +121,9 @@ void runTestSuite() {
     Serial.print("Actual: ");
     Serial.println(countdown);
     return;
-  } else if (outputFunctionsCalled != "displayCountdown_LCD(1)\n") {
+  } else if (outputFunctionsCalled != "displayCountdown_LCD(2)\n") {
     Serial.println("Test #4 2-2 failed");
-    Serial.println("Expected: displayCountdown_LCD(1)");
+    Serial.println("Expected: displayCountdown_LCD(2)");
     Serial.print("Actual: ");
     Serial.println(outputFunctionsCalled);
     return;
@@ -138,7 +138,9 @@ void runTestSuite() {
   outputFunctionsCalled = "";
   savedClock = 9000;
   countdown = -1;
-  curState = updateFSM(sCOUNTDOWN, millis(), false, false);
+  combo_max = 10;
+  combo = 4;
+  curState = updateFSM(sCOUNTDOWN, myMillis(), false, false);
   if (curState != sUPDATE_GAME) {
     Serial.println("Test #5 2-3 failed");
     Serial.println("Expected: sUPDATE_GAME");
@@ -172,7 +174,7 @@ void runTestSuite() {
   // mock clearLEDs()
   setMillis(11000);
   outputFunctionsCalled = "";
-  curState = updateFSM(sUPDATE_GAME, millis(), true, false);
+  curState = updateFSM(sUPDATE_GAME, myMillis(), true, false);
   if (curState != sGAME_OVER) {
     Serial.println("Test #6 3-4 failed");
     Serial.println("Expected: sGAME_OVER");
@@ -203,7 +205,7 @@ void runTestSuite() {
   // 3-3, mils=8000, start_button=false, end_button=false
   // set savedClock=7900, nextUpdateTime=7000, beatmap[0]=0b10110110, beat_index=0, beats_length=100
   // checks savedClock=8000, nextUpdateTime=7000, beat_index=1
-  // mock clearLEDs(false), displayGame_LCD(10, 4), performTimeStepDelay(8000)
+  // mock moveLEDs(false), displayGame_LCD(10, 4), performTimeStepDelay(8000)
   setMillis(8000);
   outputFunctionsCalled = "";
   savedClock = 7900;
@@ -211,7 +213,7 @@ void runTestSuite() {
   beatmap[0] = 0b10110110;
   beat_index = 0;
   curr_song.beats_length = 100;
-  curState = updateFSM(sUPDATE_GAME, millis(), false, false);
+  curState = updateFSM(sUPDATE_GAME, myMillis(), false, false);
   if (curState != sUPDATE_GAME) {
     Serial.println("Test #7 3-3 failed");
     Serial.println("Expected: sUPDATE_GAME");
@@ -236,9 +238,9 @@ void runTestSuite() {
     Serial.print("Actual: ");
     Serial.println(beat_index);
     return;
-  } else if (outputFunctionsCalled != "clearLEDs()\ndisplayGame_LCD(10, 4)\nperformTimeStepDelay(8000)\n") {
+  } else if (outputFunctionsCalled != "moveLEDs(0)\ndisplayGame_LCD(10, 4)\nperformTimeStepDelay(8000)\n") {
     Serial.println("Test #7 3-3 failed");
-    Serial.println("Expected: clearLEDs()\ndisplayGame_LCD(10, 4)\nperformTimeStepDelay(8000)");
+    Serial.println("Expected: moveLEDs(0)\ndisplayGame_LCD(10, 4)\nperformTimeStepDelay(8000)");
     Serial.print("Actual: ");
     Serial.println(outputFunctionsCalled);
     return;
@@ -255,7 +257,7 @@ void runTestSuite() {
   beatmap[100] = 0b11111111;
   beat_index = 100;
   finish_count = 5;
-  curState = updateFSM(sUPDATE_GAME, millis(), false, false);
+  curState = updateFSM(sUPDATE_GAME, myMillis(), false, false);
   if (curState != sUPDATE_GAME) {
     Serial.println("Test #8 3-3 failed");
     Serial.println("Expected: sUPDATE_GAME");
@@ -280,9 +282,9 @@ void runTestSuite() {
     Serial.print("Actual: ");
     Serial.println(finish_count);
     return;
-  } else if (outputFunctionsCalled != "performTimeStepDelay(8000)\nmoveLEDs()\ndisplayGame_LCD(10, 4)\n") {
+  } else if (outputFunctionsCalled != "performTimeStepDelay(8000)\nmoveLEDs(1)\ndisplayGame_LCD(10, 4)\n") {
     Serial.println("Test #8 3-3 failed");
-    Serial.println("Expected: performTimeStepDelay(8000)\nmoveLEDs()\ndisplayGame_LCD(10, 4)");
+    Serial.println("Expected: performTimeStepDelay(8000)\nmoveLEDs(1)\ndisplayGame_LCD(10, 4)");
     Serial.print("Actual: ");
     Serial.println(outputFunctionsCalled);
     return;
@@ -298,7 +300,7 @@ void runTestSuite() {
   savedClock = 4900;
   nextUpdateTime = 4000;
   finish_count = -1;
-  curState = updateFSM(sUPDATE_GAME, millis(), false, false);
+  curState = updateFSM(sUPDATE_GAME, myMillis(), false, false);
   if (curState != sGAME_OVER) {
     Serial.println("Test #9 3-4 failed");
     Serial.println("Expected: sGAME_OVER");
@@ -340,7 +342,7 @@ void runTestSuite() {
   outputFunctionsCalled = "";
   savedClock = 6000;
   isFirstCall = true;
-  curState = updateFSM(sGAME_OVER, millis(), false, false);
+  curState = updateFSM(sGAME_OVER, myMillis(), false, false);
   if (curState != sGAME_OVER) {
     Serial.println("Test #10 4-4 failed");
     Serial.println("Expected: sGAME_OVER");
@@ -359,9 +361,9 @@ void runTestSuite() {
     Serial.print("Actual: ");
     Serial.println(isFirstCall);
     return;
-  } else if (outputFunctionsCalled != "displayEnd_LCD(10, false, true)\n") {
+  } else if (outputFunctionsCalled != "displayEnd_LCD(10, 0, 1)\n") {
     Serial.println("Test #10 4-4 failed");
-    Serial.println("Expected: displayEnd_LCD(10, false, true)");
+    Serial.println("Expected: displayEnd_LCD(10, 0, 1)");
     Serial.print("Actual: ");
     Serial.println(outputFunctionsCalled);
     return;
@@ -370,15 +372,16 @@ void runTestSuite() {
   // Test 11
   // 4-1, mils=7000, start_button=true, end_button=false
   // set savedClock=1000
-  // check savedClock=7000, countdown=3, beat_index=0, isFirstCall=true
-  // mock displayEnd_LCD(20, true, true)
+  // check savedClock=7000, countdown=3, beat_index=0, isFirstCall=false
+  // mock displayEnd_LCD(20, true, false)
   setMillis(7000);
   outputFunctionsCalled = "";
   savedClock = 1000;
-  curState = updateFSM(sGAME_OVER, millis(), true, false);
-  if (curState != sCOUNTDOWN) {
+  combo_max = 20;
+  curState = updateFSM(sGAME_OVER, myMillis(), true, false);
+  if (curState != sSONG_MENU) {
     Serial.println("Test #11 4-1 failed");
-    Serial.println("Expected: sCOUNTDOWN");
+    Serial.println("Expected: sSONG_MENU");
     Serial.print("Actual: ");
     Serial.println(curState);
     return;
@@ -406,9 +409,9 @@ void runTestSuite() {
     Serial.print("Actual: ");
     Serial.println(isFirstCall);
     return;
-  } else if (outputFunctionsCalled != "displayEnd_LCD(20, true, true)\n") {
+  } else if (outputFunctionsCalled != "displayEnd_LCD(20, 1, 0)\n") {
     Serial.println("Test #11 4-1 failed");
-    Serial.println("Expected: displayEnd_LCD(20, true, true)");
+    Serial.println("Expected: displayEnd_LCD(20, 1, 0)");
     Serial.print("Actual: ");
     Serial.println(outputFunctionsCalled);
     return;

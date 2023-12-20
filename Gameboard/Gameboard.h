@@ -81,20 +81,18 @@ typedef enum {
 
 //LED board functions
 int getLEDIndex(ColorColumn color_column, int index);
-void moveLEDs();
+void moveLEDs(bool endFile);
 void clearLEDs();
 
-// //communication functions (UNO and Controller)
-void handleControllerInput();
 // int receiveFromUno();
 void uartDelay(unsigned long ltime);
 void uartReceive();
 
 // LCD screen functions
-void displayStart_LCD(bool upButtonPress, bool startButtonPress);
+int displayStart_LCD(bool startButtonPress, bool upButtonPress, bool firstCall);
 void displayCountdown_LCD(int countdown);
 void displayGame_LCD(int max_combo, int curr_combo);
-void displayEnd_LCD(int max_combo);
+void displayEnd_LCD(int max_combo, bool startButtonPress, bool firstCall);
 
 // Watchdog timer functions
 void setupWatchdogTimer(); // for call on initialization

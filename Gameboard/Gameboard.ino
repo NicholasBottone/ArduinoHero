@@ -99,18 +99,18 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
   
   case sSONG_MENU:
     if(!startBtn && !upBtn){ //transition 1-1a
+      // If no buttons pressed, stay in the start screen
       nextState = sSONG_MENU;
       displayStart_LCD(false, false, isFirstCall);
       isFirstCall = false;
     } 
     else if(!startBtn && upBtn){ //transition 1-1b (menu scroll)
+      // If the up button is pressed, scroll the selected song up
       nextState = sSONG_MENU;
-
-      // Serial1.write(song_num);
-
       displayStart_LCD(false, true, false);
     }
     else if(startBtn){ //transition 1-2
+      // When the start button is pressed, begin the countdown
       unsigned long currentMillis = myMillis();
       songToPlay = displayStart_LCD(true, false, false);
       nextState = sCOUNTDOWN;
@@ -120,13 +120,14 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
     
   case sCOUNTDOWN:
     if((mils - savedClock) >= 1000 && countdown >= 0){ //transition 2-2
+      // During the countdown, decrease the count every second
       displayCountdown_LCD(countdown);
       countdown -= 1;
       savedClock = mils;
       nextState = sCOUNTDOWN;
     } else if(countdown < 0){ //transition 2-3
-      // // send message to UNO to load song
-      // // TODO - send current index of song we're on
+      // When the countdown is over, start the game
+      // send message to UNO to load song
       Serial1.write((char)songToPlay + '1');
       displayGame_LCD(combo_max, combo);
       savedClock = mils;
@@ -138,8 +139,9 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
 
   case sUPDATE_GAME:
     if(startBtn || upBtn) { //transition 3-4(a)
+      // If a gameboard button is pressed during gameplay, stop the game
       clearLEDs();
-      //TODO - need to stop song
+      Serial1.write("S");
       nextState = sGAME_OVER;
       savedClock = mils;
       finish_count = 6;
@@ -148,6 +150,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       unsigned long start_beat_millis = myMillis(); 
       if(beatmap[beat_index] != 0b11111111 && 
         beat_index < curr_song.beats_length){ //transition 3-3(a)
+        // Continue playing the game if there are still entries in the beatmap
         resetWatchdogTimer(); // pet the watchdog timer
         moveLEDs(false);
         displayGame_LCD(combo_max, combo);
@@ -158,6 +161,8 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       } else if(((beatmap[beat_index] == 0b11111111) ||
           beat_index >= curr_song.beats_length)
           && finish_count >= 0) { //transition 3-3(b)
+        // If the beat_map has been run through, but there are still notes to play on the board,
+        // continue running until the notes have run off the board
         resetWatchdogTimer(); // pet the watchdog timer
         finish_count -= 1;
         performTimeStepDelay(start_beat_millis);
@@ -165,6 +170,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
         displayGame_LCD(combo_max, combo);
         nextState = sUPDATE_GAME;
       } else if(finish_count < 0){ //transition 3-4(b)
+        // Once the song has finished, including the residual lights from the beatmap
         performTimeStepDelay(start_beat_millis);
         nextState = sGAME_OVER;
         savedClock = mils;
@@ -177,31 +183,33 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
   case sGAME_OVER:
     Serial1.write("S");
     if (isFirstCall) {
-        // Call displayEnd_LCD with isFirstCall = true on the first entry
-        displayEnd_LCD(combo_max, startBtn, true);
+      // Call displayEnd_LCD with isFirstCall = true on the first entry
+      displayEnd_LCD(combo_max, startBtn, true);
 
-        // Set isFirstCall to false for subsequent calls
-        isFirstCall = false;
+      // Set isFirstCall to false for subsequent calls
+      isFirstCall = false;
     } else {
-        // Call displayEnd_LCD with isFirstCall = false on subsequent entries
-        displayEnd_LCD(combo_max, startBtn, false);
+      // Call displayEnd_LCD with isFirstCall = false on subsequent entries
+      displayEnd_LCD(combo_max, startBtn, false);
     }
 
     // Rest of the GAME OVER logic
     if ((mils - savedClock) < 3000 || !startBtn) { //transition 4-4
-        nextState = sGAME_OVER;
+      // Stay in gameover state if the start button isn’t pressed or 3 seconds from end of game haven’t passed
+      nextState = sGAME_OVER;
     } else if ((mils - savedClock) >= 3000 && startBtn) { //transition 4-1
-        // Reset variables for the next game
-        savedClock = mils;
-        countdown = 3;
-        score = 0;
-        combo = 0;
-        combo_max = 0;
-        start_button_pressed = false;
-        isFirstCall = true; // Reset isFirstCall for next run
-        nextState = sSONG_MENU;
-        beat_index = 0;
-        bpm_index = 0;
+      // After 3 seconds, if the start_button is pressed, return to home screen
+      // Reset variables for the next game
+      savedClock = mils;
+      countdown = 3;
+      score = 0;
+      combo = 0;
+      combo_max = 0;
+      start_button_pressed = false;
+      isFirstCall = true; // Reset isFirstCall for next run
+      nextState = sSONG_MENU;
+      beat_index = 0;
+      bpm_index = 0;
     }
     break;
   default:

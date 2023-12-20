@@ -1,0 +1,60 @@
+[Song]
+{
+  Name = "Mock Song"
+  Artist = "Test Artist"
+  Charter = "Test Charter"
+  Album = "Test Album"
+  Year = "2023"
+  Offset = 0
+  Resolution = 192
+  Player2 = bass
+  Difficulty = 0
+  PreviewStart = 0
+  PreviewEnd = 0
+  Genre = "Test"
+  MediaType = "cd"
+  MusicStream = "mock_song.ogg"
+}
+
+[SyncTrack]
+{
+  0 = TS 4
+  0 = B 90000
+  3264 = B 180000
+}
+
+[ExpertSingle]
+{
+  0 = N 0 1
+  192 = N 0 1
+  384 = N 0 1
+  576 = N 0 1
+  768 = N 0 1
+  960 = N 0 1
+  1152 = N 0 1
+  1344 = N 0 1
+  1536 = N 0 1
+  1728 = N 0 1
+  1920 = N 0 1
+  2112 = N 0 1
+  2304 = N 0 1
+  2496 = N 0 1
+  2688 = N 0 1
+  2880 = N 0 1
+  3264 = N 0 2
+  3360 = N 0 2
+  3456 = N 0 2
+  3552 = N 0 2
+  3648 = N 0 2
+  3744 = N 0 2
+  3840 = N 0 2
+  3936 = N 0 2
+  4032 = N 0 2
+  4128 = N 0 2
+  4224 = N 0 2
+  4320 = N 0 2
+  4416 = N 0 2
+  4512 = N 0 2
+  4608 = N 0 2
+  4704 = N 0 2
+}

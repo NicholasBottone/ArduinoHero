@@ -15,12 +15,19 @@ public:
   void setCursor(int col, int row) {
     cursorRow = row;
   }
-  void write(uint8_t value) {}
+  void write(int value) {}
   void print(const char* s) {
     if (cursorRow == 0) {
       firstRow = (char*)s;
     } else {
       secondRow = (char*)s;
+    }
+  }
+  void print(int value) {
+    if (cursorRow == 0) {
+      firstRow = (char*)value;
+    } else {
+      secondRow = (char*)value;
     }
   }
 };

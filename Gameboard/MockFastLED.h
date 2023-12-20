@@ -7,7 +7,12 @@ public:
   int g;
   int b;
 
+  CRGB() : r(0), g(0), b(0) {}
   CRGB(int red, int green, int blue) : r(red), g(green), b(blue) {}
+
+  bool operator==(const CRGB& other) const {
+    return r == other.r && g == other.g && b == other.b;
+  }
 
   static const CRGB Black;
   static const CRGB Blue;
@@ -25,9 +30,9 @@ const CRGB CRGB::Red = CRGB(255, 0, 0);
 const CRGB CRGB::Yellow = CRGB(255, 255, 0);
 
 class CFastLED {
-private:
-  CFastLED() {}
 public:
+  CFastLED() {}
+
   CRGB* ledsArray;
   int numLeds;
   

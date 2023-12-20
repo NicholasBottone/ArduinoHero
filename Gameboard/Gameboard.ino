@@ -1,11 +1,10 @@
 #include "Gameboard.h"
 
-// note: if the LCD is stuck on the welcome message, check that this is 
-// commented out
+// note: if the LCD is stuck on the welcome message, check that this is commented out
 // #define CHECK_UNO_COMMUNICATION
 
 char data;
-static int savedClock, finish_count, songToPlay;
+static int songToPlay;
 static bool start_button_pressed, up_button_pressed;
 
 unsigned long lastDebounceTime = 0;
@@ -40,13 +39,20 @@ void setup() {
 
   setupWatchdogTimer();
 
-  Serial.println("setup complete");
-  delay(1500);
+  #ifdef TESTING
+    runTestSuite();
+  #else
+    Serial.println("setup complete");
+    delay(1500);
+  #endif
 }
 
 // This function runs over and over, and is where you do the magic to light
 // your LEDs.
 void loop() {
+  #ifdef TESTING
+    return;
+  #endif
 
   #ifdef CHECK_UNO_COMMUNICATION
     checkUnoCommunication();
@@ -88,7 +94,6 @@ void updateInputs(){
 
 // Function that dictates the game logic, state of the game!!!
 state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
-  static bool isFirstCall = true; // Static variable to remember if it's the first call in the current state
   state nextState = curState;
   switch(curState) {
   
@@ -106,7 +111,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       displayStart_LCD(false, true, false);
     }
     else if(startBtn){ //transition 1-2
-      unsigned long currentMillis = millis();
+      unsigned long currentMillis = myMillis();
       songToPlay = displayStart_LCD(true, false, false);
       nextState = sCOUNTDOWN;
       isFirstCall = true; // Reset for next time entering this state
@@ -139,8 +144,8 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
       savedClock = mils;
       finish_count = 6;
       disableWatchdogTimer();
-    } else if(millis() >= nextUpdateTime){
-      unsigned long start_beat_millis = millis(); 
+    } else if(myMillis() >= nextUpdateTime){
+      unsigned long start_beat_millis = myMillis(); 
       if(beatmap[beat_index] != 0b11111111 && 
         beat_index < curr_song.beats_length){ //transition 3-3(a)
         resetWatchdogTimer(); // pet the watchdog timer
@@ -148,7 +153,7 @@ state updateFSM(state curState, long mils, bool startBtn, bool upBtn) {
         displayGame_LCD(combo_max, combo);
         nextState = sUPDATE_GAME;
         beat_index += 1;
-        savedClock = millis();
+        savedClock = myMillis();
         performTimeStepDelay(start_beat_millis);
       } else if(((beatmap[beat_index] == 0b11111111) ||
           beat_index >= curr_song.beats_length)

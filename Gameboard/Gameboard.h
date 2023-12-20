@@ -6,9 +6,11 @@
 #ifdef TESTING
   #include "MockFastLED.h"
   #include "MockLiquidCrystal.h"
+  #include "MockArduino.h"
 #else
   #include <FastLED.h>
   #include <LiquidCrystal.h>
+  #include "MockArduino.h"
 #endif
 
 #define LEDS_PER_COLUMN 6
@@ -49,6 +51,9 @@ unsigned int bpm_index = 0; // idxof current bpm the song is playing at
 int song_num = 0; // index in the songList
 
 unsigned long nextUpdateTime = 0; // This is how we do tempo (we dont use delay, we set the next updatetime)
+bool isFirstCall = true; // Static variable to remember if it's the first call in the current state
+int savedClock;
+int finish_count;
 
 /* Player game data */
 int combo = 0;
@@ -97,5 +102,12 @@ void enableWatchdogTimer(); // for call inside the FSM when we want to start the
 void disableWatchdogTimer(); // for call inside the FSM when we want to stop the timer
 void resetWatchdogTimer(); // for repeatedly calling to "pet" the watchdog timer
 void WDT_Handler(); // for handling the watchdog timer interrupt
+
+#ifdef TESTING
+  String outputFunctionsCalled = "";
+#endif
+
+void runTestSuite();
+state updateFSM(state curState, long mils, bool startBtn, bool upBtn);
 
 #endif // GAMEBOARD_H

@@ -6,6 +6,7 @@ const int songName_len = sizeof(songList) / sizeof(songList[0]);
 
 // Function that displays the starting screen of the game
 int displayStart_LCD(bool startButtonPress, bool upButtonPress, bool firstCall){
+  #ifndef TESTING
   static int lastSongNum = -1; // Static variable to remember the last song number
   bool screenNeedsUpdate = false;
 
@@ -41,12 +42,16 @@ int displayStart_LCD(bool startButtonPress, bool upButtonPress, bool firstCall){
   }
 
   return song_num;
+  #else
+  outputFunctionsCalled += "displayStart_LCD(" + String(startButtonPress) + ", " + String(upButtonPress) + ", " + String(firstCall) + ")\n";
+  #endif
 }
 
 
 
 // Function that displays the countdown screen
 void displayCountdown_LCD(int countdown){
+  #ifndef TESTING
   //start a count down
   lcd.clear();
   lcd.setCursor(7, 0);
@@ -58,12 +63,16 @@ void displayCountdown_LCD(int countdown){
     lcd.setCursor(1, 0);
     lcd.print("Countdown Done!");
   }
+  #else
+  outputFunctionsCalled += "displayCountdown_LCD(" + String(countdown) + ")\n";
+  #endif
 }
 
 
 // Function that displays the LCD screen during gameplay.
 // shows current combo and max combo
 void displayGame_LCD(int max_combo, int curr_combo){
+  #ifndef TESTING
   lcd.clear();
 
   lcd.setCursor(0, 0);
@@ -77,11 +86,15 @@ void displayGame_LCD(int max_combo, int curr_combo){
 
   lcd.setCursor(7, 1);
   lcd.print(curr_combo);
+  #else
+  outputFunctionsCalled += "displayGame_LCD(" + String(max_combo) + ", " + String(curr_combo) + ")\n";
+  #endif
 }
 
 
 // Function that displays the end screen, which displays the player's max combo 
 void displayEnd_LCD(int max_combo, bool startButtonPress, bool firstCall){
+  #ifndef TESTING
   static bool lastStateStartButtonPress = false; // Remember the last button press state
 
   // Determine if the screen needs an update
@@ -114,4 +127,7 @@ void displayEnd_LCD(int max_combo, bool startButtonPress, bool firstCall){
 
     lastStateStartButtonPress = startButtonPress; // Update the last button press state
   }
+  #else
+  outputFunctionsCalled += "displayEnd_LCD(" + String(max_combo) + ", " + String(startButtonPress) + ", " + String(firstCall) + ")\n";
+  #endif
 }

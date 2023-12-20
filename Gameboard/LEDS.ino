@@ -9,6 +9,7 @@ float cumulativeDrift = 0.0; // To track the drift over time during the loop
 
 // this function delays between notes in a beatmap based on BPM and drift
 void performTimeStepDelay(unsigned long start_beat_millis){
+  #ifndef TESTING
   // Get the current BPM
   float current_bpm = curr_song.bpm_values[bpm_index];
 
@@ -31,9 +32,13 @@ void performTimeStepDelay(unsigned long start_beat_millis){
       beat_index - 5 == curr_song.bpm_change_indexes[bpm_index + 1]) {
       bpm_index++; // Move to the next BPM value for the next beat
   }
+  #else
+  outputFunctionsCalled += "performTimeStepDelay(" + String(start_beat_millis) + ")\n";
+  #endif
 }
 
 void moveLEDs(bool endFile){
+  #ifndef TESTING
   /* Perform the Actual Light shifting */
 
   // Shift colors down in each column
@@ -67,6 +72,9 @@ void moveLEDs(bool endFile){
   }
   // Now that the leds array is updated, display the LEDs
   FastLED.show();
+  #else
+  outputFunctionsCalled += "moveLEDs(" + String(endFile) + ")\n";
+  #endif
 }
 
 
@@ -78,6 +86,7 @@ int getLEDIndex(ColorColumn color_column, int index) {
 
 // function that turns all LEDs off of last row
 void clearLEDs(){
+  #ifndef TESTING
   for(int k = 0; k < LEDS_PER_COLUMN; k++) {
     leds[getLEDIndex(ORANGE, k)] = CRGB::Black;
     leds[getLEDIndex(YELLOW, k)] = CRGB::Black;
@@ -86,4 +95,7 @@ void clearLEDs(){
     leds[getLEDIndex(GREEN, k)] = CRGB::Black;
   }
   FastLED.show();
+  #else
+  outputFunctionsCalled += "clearLEDs()\n";
+  #endif
 }

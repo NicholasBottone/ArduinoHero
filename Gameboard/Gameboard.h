@@ -1,14 +1,16 @@
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
 
+#include <FastLED.h>
+#include <LiquidCrystal.h>
+
 #define LEDS_PER_COLUMN 6
 #define NUM_LEDS (LEDS_PER_COLUMN * 5)
 
-#include <LiquidCrystal.h>
 #include "songs.h"
 
 //LED pin
-#define DATA_PIN A2 //TODO - CAN THIS MOVE?
+#define DATA_PIN A2
 
 //Controller pin
 #define UART_IN_PIN 7
@@ -21,7 +23,7 @@
 #define d6 4
 #define d7 5
 #define START_BTN 6
-#define UP_BTN A1 //TODO - see if this works
+#define UP_BTN A1
 
 // LED Setup
 CRGB leds[NUM_LEDS];

@@ -1,4 +1,3 @@
-#include <FastLED.h>
 #include "Gameboard.h"
 
 bool beat_queue[6][5];
@@ -10,34 +9,28 @@ float cumulativeDrift = 0.0; // To track the drift over time during the loop
 
 // this function delays between notes in a beatmap based on BPM and drift
 void performTimeStepDelay(unsigned long start_beat_millis){
-    // Get the current BPM
-    float current_bpm = curr_song.bpm_values[bpm_index];
+  // Get the current BPM
+  float current_bpm = curr_song.bpm_values[bpm_index];
 
-    // Calculate the delay for the current BPM
-    float calculatedDelay = 60000.0 / current_bpm / curr_song.sampling_rate;
+  // Calculate the delay for the current BPM
+  float calculatedDelay = 60000.0 / current_bpm / curr_song.sampling_rate;
 
-    // Calculate and compensate for drift
-    int actualDelay = (int)calculatedDelay;
-    cumulativeDrift += (calculatedDelay - actualDelay);
-    if (cumulativeDrift >= 1.0) {
-        actualDelay += 1;
-        cumulativeDrift -= 1.0;
-    }
+  // Calculate and compensate for drift
+  int actualDelay = (int)calculatedDelay;
+  cumulativeDrift += (calculatedDelay - actualDelay);
+  if (cumulativeDrift >= 1.0) {
+      actualDelay += 1;
+      cumulativeDrift -= 1.0;
+  }
 
-    // Schedule the next update time
-    nextUpdateTime = start_beat_millis + actualDelay;
+  // Schedule the next update time
+  nextUpdateTime = start_beat_millis + actualDelay;
 
-    // Check for BPM change for the next beat
-    if (bpm_index < curr_song.bpm_values_length - 1 &&
-        beat_index - 5 == curr_song.bpm_change_indexes[bpm_index + 1]) {
-        // Serial.print("BPM changing at beat ");
-        // Serial.print(beat_index);
-        // Serial.print(" from ");
-        // Serial.print(curr_song.bpm_values[bpm_index]);
-        // Serial.print(" to ");
-        bpm_index++; // Move to the next BPM value for the next beat
-        // Serial.println(curr_song.bpm_values[bpm_index]);
-    }
+  // Check for BPM change for the next beat
+  if (bpm_index < curr_song.bpm_values_length - 1 &&
+      beat_index - 5 == curr_song.bpm_change_indexes[bpm_index + 1]) {
+      bpm_index++; // Move to the next BPM value for the next beat
+  }
 }
 
 void moveLEDs(bool endFile){
@@ -60,14 +53,11 @@ void moveLEDs(bool endFile){
 
   if(!endFile){
     unsigned char beat = beatmap[beat_index];
-    // Serial.print("BEAT: ");
-    // Serial.println((int)beat, BIN);
       if((beat & (1 << 4)) > 0) columnColors[ORANGE][0] = CRGB::OrangeRed;
       if((beat & (1 << 3)) > 0) columnColors[BLUE][0] = CRGB::Blue;
       if((beat & (1 << 2)) > 0) columnColors[YELLOW][0] = CRGB::Yellow;
       if((beat & (1 << 1)) > 0) columnColors[RED][0] = CRGB::Red;
       if((beat & (1 << 0)) > 0) columnColors[GREEN][0] = CRGB::Green;
-      // TODO: Open note (0b1000000) colors all in the row white
   }
   // Update the actual leds array from our columnColors 2D array
   for (int col = 0; col < 5; ++col) {
@@ -77,9 +67,6 @@ void moveLEDs(bool endFile){
   }
   // Now that the leds array is updated, display the LEDs
   FastLED.show();
-
-///////////////////////////////////////////////////////////////////////////////////////////
-  // performTimeStepDelay(); // this happens in main loop now
 }
 
 

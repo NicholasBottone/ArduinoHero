@@ -1,7 +1,6 @@
-#include <FastLED.h>
 #include "Gameboard.h"
 
-// note: if the LCD is stuck on the welcom message, check that this is 
+// note: if the LCD is stuck on the welcome message, check that this is 
 // commented out
 // #define CHECK_UNO_COMMUNICATION
 
@@ -12,7 +11,7 @@ static bool start_button_pressed, up_button_pressed;
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 200;
 
-// This function sets up the ledsand tells the controller about them
+// This function sets up the LEDs and tells the controller about them
 void setup() {
   Serial.begin(115200);   // initialise serial monitor port
   while (!Serial) {}
@@ -46,7 +45,7 @@ void setup() {
 }
 
 // This function runs over and over, and is where you do the magic to light
-// your leds.
+// your LEDs.
 void loop() {
 
   #ifdef CHECK_UNO_COMMUNICATION
